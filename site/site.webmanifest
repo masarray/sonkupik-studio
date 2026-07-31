@@ -1,0 +1,18 @@
+{
+  "name": "SONKUPIK STUDIO",
+  "short_name": "SONKUPIK",
+  "description": "Professional K500 karaoke processor control and preset engineering software for Windows.",
+  "start_url": "/sonkupik-studio/",
+  "scope": "/sonkupik-studio/",
+  "display": "standalone",
+  "background_color": "#070b11",
+  "theme_color": "#070b11",
+  "icons": [
+    {
+      "src": "assets/sonkupik-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
