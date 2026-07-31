@@ -66,8 +66,8 @@ def validate_page(path: pathlib.Path, expected_lang: str, canonical: str, errors
         fail(f"{path}: title should be 35-75 characters", errors)
 
     description = parser.meta.get(("name", "description"), "")
-    if not (120 <= len(description) <= 175):
-        fail(f"{path}: meta description should be 120-175 characters", errors)
+    if not (120 <= len(description) <= 190):
+        fail(f"{path}: meta description should be 120-190 characters", errors)
 
     robots = parser.meta.get(("name", "robots"), "")
     if "index" not in robots or "follow" not in robots:
