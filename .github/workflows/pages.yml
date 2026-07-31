@@ -1,0 +1,119 @@
+name: Deploy product website
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'site/**'
+      - 'tools/**'
+      - '.github/workflows/pages.yml'
+  release:
+    types:
+      - published
+      - released
+      - edited
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout public distribution repository
+        uses: actions/checkout@v6
+
+      - name: Resolve reviewed latest-release snapshot
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+          import urllib.request
+
+          repository = "masarray/sonkupik-studio"
+          api_url = f"https://api.github.com/repos/{repository}/releases/latest"
+          release_prefix = f"https://github.com/{repository}/releases/"
+          fallback_path = pathlib.Path("site/release.json")
+
+          try:
+              request = urllib.request.Request(
+                  api_url,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "User-Agent": "sonkupik-studio-pages",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                  },
+              )
+              with urllib.request.urlopen(request, timeout=20) as response:
+                  payload = json.load(response)
+
+              release_url = str(payload.get("html_url", ""))
+              if not release_url.startswith(release_prefix):
+                  raise ValueError("Unexpected release URL")
+
+              allowed_assets = []
+              for asset in payload.get("assets", []):
+                  name = str(asset.get("name", ""))
+                  url = str(asset.get("browser_download_url", ""))
+                  if not url.startswith(release_prefix):
+                      continue
+                  if not (
+                      (name.startswith("SONKUPIK-STUDIO-") and name.endswith("-Setup.exe"))
+                      or (name.startswith("SONKUPIK-STUDIO-") and name.endswith("-Portable.exe"))
+                      or name == "SHA256SUMS.txt"
+                  ):
+                      continue
+                  allowed_assets.append({
+                      "name": name,
+                      "browser_download_url": url,
+                      "size": int(asset.get("size", 0)),
+                  })
+
+              snapshot = {
+                  "tag_name": str(payload.get("tag_name", "Latest")),
+                  "name": str(payload.get("name") or payload.get("tag_name") or "SONKUPIK STUDIO"),
+                  "html_url": release_url,
+                  "published_at": payload.get("published_at", ""),
+                  "assets": allowed_assets,
+              }
+              fallback_path.write_text(json.dumps(snapshot, indent=2) + "\n", encoding="utf-8")
+              print(f"Resolved {snapshot['tag_name']} with {len(allowed_assets)} supported assets")
+          except Exception as error:
+              print(f"Latest release API unavailable; keeping committed fallback: {error}")
+
+          pathlib.Path("site/id/release.json").write_text(
+              fallback_path.read_text(encoding="utf-8"),
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Validate public site
+        run: python tools/validate-site.py
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
