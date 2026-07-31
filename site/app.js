@@ -89,6 +89,32 @@ function setText(selector, value) {
   });
 }
 
+function decorateWindowsDownloads() {
+  const namespace = "http://www.w3.org/2000/svg";
+  const pathData = "M1 2.75 10.2 1.5v9.3H1V2.75Zm10.2-1.4L23 0v10.8H11.2V1.35ZM1 12h9.2v9.3L1 20.05V12Zm10.2 0H23v10.8l-11.8-1.35V12Z";
+
+  document.querySelectorAll('[data-download="setup"], [data-download="portable"]').forEach((link) => {
+    if (link.querySelector('[data-platform-icon="windows"]')) return;
+
+    const icon = document.createElementNS(namespace, "svg");
+    icon.setAttribute("viewBox", "0 0 24 24");
+    icon.setAttribute("width", "16");
+    icon.setAttribute("height", "16");
+    icon.setAttribute("aria-hidden", "true");
+    icon.setAttribute("focusable", "false");
+    icon.setAttribute("data-platform-icon", "windows");
+    icon.style.flex = "0 0 1em";
+    icon.style.width = "1em";
+    icon.style.height = "1em";
+    icon.style.fill = "currentColor";
+
+    const path = document.createElementNS(namespace, "path");
+    path.setAttribute("d", pathData);
+    icon.append(path);
+    link.prepend(icon);
+  });
+}
+
 function bindDownload(kind, asset) {
   document.querySelectorAll(`[data-download="${kind}"]`).forEach((link) => {
     if (!asset) {
@@ -205,4 +231,5 @@ async function copyCommand(event) {
 
 document.addEventListener("click", closeMobileMenu);
 document.addEventListener("click", copyCommand);
+decorateWindowsDownloads();
 resolveRelease();
