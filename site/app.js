@@ -3,19 +3,9 @@ const RELEASE_API = `https://api.github.com/repos/${RELEASE_REPOSITORY}/releases
 const RELEASE_PAGE = `https://github.com/${RELEASE_REPOSITORY}/releases/latest`;
 const siteRoot = document.documentElement.dataset.siteRoot || "./";
 const SNAPSHOT_URL = new URL(`${siteRoot}release.json`, document.baseURI).href;
-
 const language = document.documentElement.lang === "id" ? "id" : "en";
+
 const copy = {
-  en: {
-    checking: "Checking the official distribution…",
-    ready: "Official release verified",
-    fallback: "Reviewed release snapshot",
-    unavailable: "Open the official release page",
-    published: "Published",
-    copied: "Command copied",
-    copyFailed: "Copy the command manually",
-    openRelease: "Open release",
-  },
   id: {
     checking: "Memeriksa distribusi resmi…",
     ready: "Rilis resmi terverifikasi",
@@ -26,176 +16,183 @@ const copy = {
     copyFailed: "Salin perintah secara manual",
     openRelease: "Buka rilis",
   },
+  en: {
+    checking: "Checking the official distribution…",
+    ready: "Official release verified",
+    fallback: "Reviewed release snapshot",
+    unavailable: "Open the official release page",
+    published: "Published",
+    copied: "Command copied",
+    copyFailed: "Copy the command manually",
+    openRelease: "Open release",
+  },
 };
 
-const conversionCopy = {
+const landingCopy = {
   id: {
-    rackEyebrow: "SATU ALAT, BANYAK FUNGSI RACK",
-    rackTitle: "Bukan membeli fitur satu per satu. K500 menyatukannya menjadi satu sistem karaoke.",
-    rackLead: "Vocal effect, feedback control, dynamics, key transpose, equalizer, crossover, speaker delay dan loudspeaker management bekerja dalam satu jalur sinyal yang dapat disimpan sebagai preset.",
-    rackItems: [
-      ["VOCAL EFFECT PROCESSOR", "Reverb dan echo terpisah", "Atur pre-delay, decay, delay, repeat, filter serta PEQ efek untuk membangun ruang vokal yang lebih matang."],
-      ["FEEDBACK + DYNAMICS", "FBX, noise gate dan compressor", "Bersihkan noise saat diam, kendalikan puncak vokal dan bantu mengurangi risiko feedback melalui tuning yang benar."],
-      ["MUSIC PERFORMANCE", "Key transpose dan source control", "Naik-turunkan nada musik ±7 semitone serta atur gain untuk Input 1, Input 2, Bluetooth, U-disk dan digital."],
-      ["LOUDSPEAKER MANAGEMENT", "Crossover, delay dan multi-output", "Tata Main, Surround, Center dan Subwoofer dengan level, routing, EQ, dynamics dan alignment masing-masing."],
+    title: "KTV PRO K500 — Pusat DSP Karaoke Berkelas Panggung",
+    description: "Bangun suara karaoke yang lebih mewah, nyaman dan terkendali dengan vocal effect, feedback control, key transpose, parametric EQ, crossover, speaker delay dan loudspeaker management KTV PRO K500.",
+    nav: [
+      ["#hasil-suara", "Hasil suara"],
+      ["#mengapa", "Mengapa K500"],
+      ["#fitur", "Fitur utama"],
+      ["#speaker", "Sistem speaker"],
+      ["#download", "Download"],
     ],
-    inventoryEyebrow: "FEATURE INVENTORY K500",
-    inventoryTitle: "Tidak ada fitur penting yang disembunyikan di balik istilah “digital mixer”.",
-    inventoryLead: "Buka setiap kelompok untuk melihat fungsi lengkap K500. Detail ini ditampilkan setelah manfaat utama agar pengguna awam tetap mudah memahami produknya.",
-    families: [
-      {
-        number: "01",
-        title: "Musik dan kenyamanan penyanyi",
-        subtitle: "Membuat lagu lebih cocok dengan penyanyi dan sumber audio lebih konsisten.",
-        open: true,
-        items: [
-          ["Key transpose -7 sampai +7 semitone", "Memindahkan nada musik pengiring agar lebih nyaman dinyanyikan tanpa mengganti backing track.", "MUSIC KEY"],
-          ["Lima jalur sumber musik", "Input 1, Input 2, Bluetooth, U-disk dan digital dapat dipilih sesuai sumber yang digunakan.", "SOURCE ROUTER"],
-          ["Gain terpisah per sumber", "Setiap jalur musik mempunyai trim/gain sendiri agar perpindahan sumber tidak membuat level melonjak.", "GAIN STAGING"],
-          ["Music PEQ 7-band", "Membentuk bass, body, presence dan clarity musik tanpa harus mengorbankan ruang vokal.", "PARAMETRIC EQ"],
-          ["HPF, LPF dan tipe filter", "Membatasi frekuensi yang tidak dibutuhkan serta mengatur kemiringan filter sesuai sistem.", "CROSSOVER"],
-          ["Bass, Mid, Mid Frequency, Treble", "Kontrol cepat untuk koreksi tonal harian pada workflow dan firmware yang mendukung.", "QUICK TONE"],
-        ],
-      },
-      {
-        number: "02",
-        title: "Vokal, efek dan pengendalian feedback",
-        subtitle: "Fungsi yang biasanya tersebar pada vocal processor, dynamics rack dan feedback controller.",
-        open: true,
-        items: [
-          ["Mic A dan Mic B", "Dua kelompok pemrosesan mikrofon dengan level dan jalur tuning yang jelas.", "MIC GROUPS"],
-          ["PEQ 10-band per kelompok mic", "Koreksi resonansi, ketebalan, nasal, presence dan air secara presisi pada Mic A dan Mic B.", "10-BAND PEQ"],
-          ["Mic HPF dan LPF", "Mengurangi getaran rendah, rumble dan frekuensi tinggi yang tidak diperlukan oleh mikrofon.", "BAND LIMITS"],
-          ["Noise gate", "Mengurangi noise latar ketika mikrofon tidak sedang digunakan.", "CLEANER SILENCE"],
-          ["Compressor lengkap", "Threshold, ratio, attack dan release membantu menjaga level vokal lebih stabil dan terkendali.", "VOCAL DYNAMICS"],
-          ["FBX feedback-control depth", "Mengatur kedalaman fungsi pengendalian feedback sebagai bagian dari sistem tuning, bukan tombol ajaib tunggal.", "FEEDBACK CONTROL"],
-          ["Reverb terpisah", "Level, decay, pre-delay, HPF, LPF dan PEQ 5-band untuk membangun ruang vokal.", "ROOM ENGINE"],
-          ["Echo terpisah", "Level, repeat, delay, HPF, LPF dan PEQ 5-band untuk karakter echo yang lebih terarah.", "DELAY ENGINE"],
-        ],
-      },
-      {
-        number: "03",
-        title: "Loudspeaker management dan tuning ruangan",
-        subtitle: "Mengelola empat zona output, bukan hanya satu master stereo.",
-        open: true,
-        items: [
-          ["Main L/R", "Level kiri/kanan, campuran mic, music, reverb, echo, compressor dan PEQ 7-band.", "PRIMARY OUTPUT"],
-          ["Surround L/R", "Level dan routing sendiri, compressor, PEQ 5-band serta delay kiri dan kanan terpisah.", "ROOM DEPTH"],
-          ["Center", "Output fokus dengan level, campuran sumber, compressor dan PEQ 5-band.", "VOCAL SUPPORT"],
-          ["Subwoofer", "Level dan routing khusus, compressor, PEQ 5-band serta HPF/LPF crossover.", "LOW FREQUENCY"],
-          ["Mix per output", "Jumlah mic direct, music, reverb dan echo dapat disusun berbeda pada setiap jalur output.", "MATRIX MIX"],
-          ["Output dynamics", "Compressor pada jalur output membantu menjaga headroom dan perilaku sistem lebih konsisten.", "SYSTEM CONTROL"],
-          ["Speaker delay alignment", "Delay surround kiri/kanan membantu menyelaraskan waktu tiba suara pada posisi speaker berbeda.", "TIME ALIGNMENT"],
-          ["PEQ lintas jalur", "Main, surround, center, sub, reverb dan echo mempunyai section EQ masing-masing.", "ROOM TUNING"],
-        ],
-      },
-      {
-        number: "04",
-        title: "Operasional, preset dan software",
-        subtitle: "Membuat hasil tuning dapat dipakai ulang, dibandingkan dan disebarkan dengan aman.",
-        open: false,
-        items: [
-          ["Startup level dan maximum limits", "Atur level awal dan batas maksimum music, microphone serta effect agar startup lebih dapat diprediksi.", "SAFE BOOT"],
-          ["Mode dan slot perangkat", "Simpan beberapa karakter sistem untuk penyanyi, genre, ruangan atau kebutuhan acara berbeda.", "DEVICE MEMORY"],
-          ["Preset PC", "Arsipkan setting di komputer tanpa langsung menimpa slot perangkat.", "LOCAL LIBRARY"],
-          ["Readback dan compare", "Mulai dari nilai aktual perangkat dan bandingkan sebelum melakukan write.", "CONTROLLED CHANGE"],
-          ["Mass preset upload", "Siapkan satu set preset dan deploy ke slot yang dituju secara lebih efisien.", "BULK DEPLOYMENT"],
-          ["USB HID dan Bluetooth", "Gunakan jalur koneksi yang didukung oleh perangkat, revisi hardware dan firmware terkait.", "LIVE CONTROL"],
-          ["Level recording U-disk dan USB", "Kelola field level perekaman pada workflow hardware yang mendukung.", "RECORDING"],
-          ["Dance / Mic Trigger", "Kontrol trigger berbasis microphone tersedia pada model UI tertentu dan bergantung pada dukungan mapping firmware.", "DEVICE DEPENDENT"],
-          ["Installer, Portable dan SHA-256", "Pilih paket Windows resmi dan verifikasi identitas file sebelum digunakan.", "VERIFIED RELEASE"],
-        ],
-      },
-    ],
-    decisionEyebrow: "SUDAH PUNYA ATAU SEDANG MEMPERTIMBANGKAN K500?",
-    decisionTitle: "Lihat kemampuan perangkatnya secara utuh—lalu gunakan SONKUPIK STUDIO untuk membuka kontrol yang lebih visual.",
-    decisionLead: "Landing page ini menjelaskan nilai K500 untuk calon pembeli sekaligus menyediakan software resmi bagi pemilik perangkat yang kompatibel.",
-    primary: "Download untuk Windows",
-    secondary: "Lihat fitur utama",
-    note: "Catatan teknis: ketersediaan live read/write dapat berbeda menurut revisi K500, firmware dan metode koneksi. Istilah “seperti rack profesional” menjelaskan integrasi fungsi, bukan klaim bahwa algoritmanya identik dengan merek efek tertentu.",
-    mobile: "Kontrol K500 lebih lengkap dari Windows",
+    hero: {
+      eyebrow: "INTEGRATED KARAOKE DSP · PROFESSIONAL-STAGE WORKFLOW",
+      title: "Bangun suara karaoke berkelas panggung. <span>Satu alat, seluruh pemrosesan.</span>",
+      lead: "KTV PRO K500 menyatukan vocal effect, feedback control, noise gate, compressor, key transpose, parametric EQ, crossover, speaker delay dan loudspeaker management ke dalam satu pusat DSP yang siap dipakai untuk karaoke premium.",
+      primary: "Dengar manfaatnya lewat fitur",
+      secondary: "Sudah punya K500? Download software",
+      trust: ["Nada lagu lebih nyaman", "Vokal lebih berkelas", "Feedback lebih terkendali", "Speaker lebih presisi"],
+      meta: ["Key transpose ±7", "2 vocal FX engine", "Mic PEQ 10 + 10 band"],
+    },
+    outcomes: {
+      eyebrow: "SUARA YANG ANDA DAMBAKAN",
+      title: "Bukan sekadar lebih keras. Lebih enak didengar, lebih mudah dinyanyikan, dan lebih aman dikendalikan.",
+      lead: "K500 mengubah kumpulan parameter teknis menjadi enam hasil yang langsung terasa oleh penyanyi, keluarga, tamu dan operator.",
+      cards: [
+        ["01", "Vokal jernih, berisi dan tidak menusuk", "Masalah umum", "Suara tipis, nasal, terlalu tajam atau tenggelam di balik musik.", "Dengan K500", "PEQ 10-band per grup mic, HPF/LPF dan compressor memberi ruang untuk membentuk body, presence dan clarity secara lebih presisi.", "VOCAL CLARITY"],
+        ["02", "Ambience mewah, bukan echo murahan", "Masalah umum", "Echo terdengar menumpuk, jauh atau membuat kata-kata tidak jelas.", "Dengan K500", "Reverb dan echo bekerja sebagai dua engine terpisah—lengkap dengan pre-delay, decay, delay, repeat, filtering dan PEQ efek.", "PREMIUM VOCAL SPACE"],
+        ["03", "Nada lagu mengikuti kemampuan penyanyi", "Masalah umum", "Backing track terlalu tinggi atau rendah sehingga penyanyi cepat lelah.", "Dengan K500", "Key transpose -7 sampai +7 semitone memindahkan nada musik pengiring tanpa harus mencari versi lagu lain.", "SINGER COMFORT"],
+        ["04", "Feedback lebih terkendali saat volume dinaikkan", "Masalah umum", "Mikrofon mudah mendenging ketika posisi, gain atau akustik ruangan kurang ideal.", "Dengan K500", "FBX depth bekerja bersama gain structure, PEQ, filter, gate dan compressor sebagai satu sistem pengendalian feedback.", "FEEDBACK MANAGEMENT"],
+        ["05", "Bass, vokal dan speaker terasa lebih menyatu", "Masalah umum", "Sub terlalu dominan, suara belakang terlambat atau tiap speaker terasa berjalan sendiri.", "Dengan K500", "Crossover, output PEQ, compressor, routing dan delay Surround L/R membantu menata Main, Surround, Center dan Subwoofer.", "ROOM COHERENCE"],
+        ["06", "Setting bagus tetap konsisten setiap digunakan", "Masalah umum", "Suara berubah karena operator harus mengingat dan menyetel ulang banyak parameter.", "Dengan K500", "Startup limits, device mode, preset PC, readback, compare dan permanent store membuat hasil tuning dapat diulang.", "REPEATABLE SOUND"],
+      ],
+    },
+    rack: {
+      eyebrow: "SATU ALAT, BANYAK FUNGSI RACK",
+      title: "Kelengkapan sistem profesional tanpa menumpuk perangkat terpisah.",
+      lead: "K500 mengintegrasikan kategori fungsi yang biasanya tersebar pada vocal processor, feedback controller, dynamics rack, key changer, equalizer, crossover dan loudspeaker processor.",
+      items: [
+        ["VOCAL EFFECT PROCESSOR", "Reverb + echo independen", "Bentuk ruang vokal dengan timing, tonal filter dan PEQ terpisah."],
+        ["FEEDBACK & DYNAMICS", "FBX + gate + compressor", "Bersihkan noise, kontrol puncak dan kelola risiko feedback secara sistematis."],
+        ["MUSIC PERFORMANCE", "Key transpose + source routing", "Sesuaikan nada lagu dan jaga level antar-sumber tetap konsisten."],
+        ["LOUDSPEAKER MANAGEMENT", "Crossover + delay + multi-output", "Tata empat zona speaker dengan processing dan routing masing-masing."],
+      ],
+    },
+    proof: {
+      eyebrow: "BUKTI KEDALAMAN DSP",
+      title: "Kontrol yang cukup sederhana untuk dipakai, cukup dalam untuk dituning serius.",
+      items: [
+        ["±7", "semitone key transpose", "Membawa lagu ke jangkauan suara yang lebih nyaman."],
+        ["2", "engine vocal effect", "Reverb dan echo dapat dibentuk secara independen."],
+        ["10 + 10", "band PEQ Mic A/B", "Koreksi dua grup mikrofon secara presisi."],
+        ["4", "zona loudspeaker", "Main, Surround, Center dan Subwoofer."],
+        ["7 / 5", "band output PEQ", "Tuning khusus pada Main dan jalur output lainnya."],
+      ],
+    },
+    inventory: {
+      headingEyebrow: "SEMUA FITUR, SATU TEMPAT",
+      headingTitle: "Kelengkapan profesional tanpa membuat pengguna awam tersesat.",
+      headingLead: "Bagian ini adalah referensi teknis lengkap. Buka hanya kelompok yang ingin Anda pelajari; manfaat utama K500 sudah dijelaskan di bagian sebelumnya.",
+      groups: [
+        ["01", "Musik, media dan kenyamanan penyanyi", "Input 1, Input 2, Bluetooth, U-disk dan digital source; gain per sumber; master music level; key transpose -7 sampai +7; PEQ musik 7-band; HPF/LPF dan tipe filter; quick tone Bass, Mid, Mid Frequency dan Treble pada workflow yang mendukung; serta media transport pada koneksi yang kompatibel."],
+        ["02", "Microphone dan vocal processing", "Level Mic A dan Mic B; PEQ 10-band untuk masing-masing grup; EQ link; HPF/LPF; noise gate; compressor threshold, ratio, attack dan release; shared FBX depth; top mic volume; initial mic volume dan maximum mic limit."],
+        ["03", "Reverb dan echo engine", "Reverb level, decay, pre-delay, HPF, LPF dan PEQ 5-band. Echo level, repeat, delay, HPF, LPF dan PEQ 5-band. Level kedua efek dapat didistribusikan berbeda ke setiap output."],
+        ["04", "Output, crossover dan loudspeaker management", "Main L/R, Surround L/R, Center dan Subwoofer; output level; campuran mic, music, reverb dan echo per jalur; compressor output; HPF/LPF dan tipe filter; PEQ 7-band pada Main serta PEQ 5-band pada Surround, Center dan Sub; delay alignment Surround kiri dan kanan."],
+        ["05", "System, safe startup dan recording", "Top music, mic dan effect volume; initial serta maximum startup limits; effect initial level; recording level U-disk dan USB pada hardware yang mendukung; Dance/Mic Trigger pada mapping yang sesuai; checksum preset dan device-state readback."],
+        ["06", "Preset, mode perangkat dan deployment", "Sepuluh equipment-mode atau device slots; recall perangkat; preset PC; factory starting points; readback; compare; permanent store ke slot tujuan; mass preset upload; serta library berdasarkan penyanyi, genre, ruangan atau acara."],
+        ["07", "Koneksi dan distribusi software", "Live control melalui USB HID dan Bluetooth yang kompatibel; Windows 10/11 64-bit; paket Setup dan Portable; resolver GitHub Releases resmi; serta SHA-256 untuk verifikasi identitas file."],
+      ],
+    },
+    decision: {
+      eyebrow: "DARI IMPIAN SUARA KE SISTEM YANG BISA DITUNING",
+      title: "Untuk calon pembeli, K500 adalah pusat pemrosesan. Untuk pemiliknya, SONKUPIK STUDIO adalah control room-nya.",
+      lead: "Pelajari arsitektur suara K500 terlebih dahulu. Ketika perangkat sudah tersedia, gunakan software Windows untuk membaca, menata, membandingkan dan menyimpan hasil tuning secara lebih visual.",
+      primary: "Lihat loudspeaker management",
+      secondary: "Download SONKUPIK STUDIO",
+    },
+    mobile: "Sudah punya K500?",
+    mobileButton: "Download software",
+    claim: "K500 menyediakan perangkat pemrosesan untuk membangun workflow karaoke bergaya profesional. Hasil akhir tetap dipengaruhi oleh mikrofon, speaker, amplifier, akustik, gain structure, teknik bernyanyi dan kualitas tuning. Ketersediaan live read/write dapat berbeda menurut revisi hardware, firmware dan metode koneksi.",
   },
   en: {
-    rackEyebrow: "ONE UNIT, MULTIPLE RACK FUNCTIONS",
-    rackTitle: "Instead of buying every function separately, K500 integrates them into one karaoke system.",
-    rackLead: "Vocal effects, feedback control, dynamics, key transpose, equalization, crossover, speaker delay and loudspeaker management operate inside one signal path that can be preserved as a preset.",
-    rackItems: [
-      ["VOCAL EFFECT PROCESSOR", "Independent reverb and echo", "Shape pre-delay, decay, delay, repeat, filtering and effect PEQ for a more deliberate vocal space."],
-      ["FEEDBACK + DYNAMICS", "FBX, noise gate and compressor", "Reduce idle noise, control vocal peaks and lower feedback risk through correct system tuning."],
-      ["MUSIC PERFORMANCE", "Key transpose and source control", "Move the accompaniment ±7 semitones and trim Input 1, Input 2, Bluetooth, U-disk and digital sources."],
-      ["LOUDSPEAKER MANAGEMENT", "Crossover, delay and multi-output", "Tune Main, Surround, Center and Subwoofer with their own level, routing, EQ, dynamics and alignment."],
+    title: "KTV PRO K500 — Stage-Class Karaoke DSP Center",
+    description: "Build more polished, comfortable and controlled karaoke sound with KTV PRO K500 vocal effects, feedback control, key transpose, parametric EQ, crossover, speaker delay and loudspeaker management.",
+    nav: [
+      ["#sound-results", "Sound results"],
+      ["#why", "Why K500"],
+      ["#features", "Key features"],
+      ["#speakers", "Speaker system"],
+      ["#download", "Download"],
     ],
-    inventoryEyebrow: "COMPLETE K500 FEATURE INVENTORY",
-    inventoryTitle: "No important capability is hidden behind the phrase “digital mixer.”",
-    inventoryLead: "Open each group to review the complete K500 function set. Technical detail appears after the main benefits so first-time visitors can still understand the product quickly.",
-    families: [
-      {
-        number: "01", title: "Music and singer comfort", subtitle: "Match songs to the singer and keep sources consistent.", open: true,
-        items: [
-          ["-7 to +7 semitone key transpose", "Moves the accompaniment into a more comfortable range without replacing the backing track.", "MUSIC KEY"],
-          ["Five music source paths", "Input 1, Input 2, Bluetooth, U-disk and digital can be selected for different playback systems.", "SOURCE ROUTER"],
-          ["Source-specific gain", "Each music path has its own trim so switching sources does not create sudden level jumps.", "GAIN STAGING"],
-          ["7-band music PEQ", "Shapes weight, body, presence and clarity while preserving space for the singer.", "PARAMETRIC EQ"],
-          ["HPF, LPF and filter types", "Limits unnecessary frequencies and selects filter behavior for the system.", "CROSSOVER"],
-          ["Bass, Mid, Mid Frequency and Treble", "Fast tonal correction on supported workflows and firmware revisions.", "QUICK TONE"],
-        ],
-      },
-      {
-        number: "02", title: "Vocals, effects and feedback control", subtitle: "Functions normally spread across vocal, dynamics and feedback processors.", open: true,
-        items: [
-          ["Mic A and Mic B groups", "Two microphone processing groups with clear level and tuning paths.", "MIC GROUPS"],
-          ["10-band PEQ per mic group", "Targets resonance, body, nasal tone, presence and air on Mic A and Mic B.", "10-BAND PEQ"],
-          ["Microphone HPF and LPF", "Reduces low-frequency rumble and unnecessary high-frequency energy.", "BAND LIMITS"],
-          ["Noise gate", "Reduces background noise while microphones are idle.", "CLEANER SILENCE"],
-          ["Full compressor controls", "Threshold, ratio, attack and release stabilize vocal level and peaks.", "VOCAL DYNAMICS"],
-          ["FBX feedback-control depth", "Adjusts feedback-control intensity as part of correct system tuning, not as a magic single button.", "FEEDBACK CONTROL"],
-          ["Independent reverb", "Level, decay, pre-delay, HPF, LPF and 5-band PEQ for vocal ambience.", "ROOM ENGINE"],
-          ["Independent echo", "Level, repeat, delay, HPF, LPF and 5-band PEQ for controlled echo character.", "DELAY ENGINE"],
-        ],
-      },
-      {
-        number: "03", title: "Loudspeaker management and room tuning", subtitle: "Four output zones rather than one stereo master.", open: true,
-        items: [
-          ["Main L/R", "Independent left/right level, mic, music, reverb, echo, compressor and 7-band PEQ.", "PRIMARY OUTPUT"],
-          ["Surround L/R", "Independent mix and level, compressor, 5-band PEQ and separate left/right delay.", "ROOM DEPTH"],
-          ["Center", "Focused output with its own level, source mix, compressor and 5-band PEQ.", "VOCAL SUPPORT"],
-          ["Subwoofer", "Dedicated level and routing, compressor, 5-band PEQ plus HPF/LPF crossover.", "LOW FREQUENCY"],
-          ["Per-output source mix", "Mic direct, music, reverb and echo can be balanced differently for every output path.", "MATRIX MIX"],
-          ["Output dynamics", "Output compressors help preserve headroom and consistent system behavior.", "SYSTEM CONTROL"],
-          ["Speaker delay alignment", "Separate surround delays help align arrival time across speaker positions.", "TIME ALIGNMENT"],
-          ["PEQ across the system", "Main, surround, center, sub, reverb and echo expose their own equalization sections.", "ROOM TUNING"],
-        ],
-      },
-      {
-        number: "04", title: "Operation, presets and software", subtitle: "Make tuning repeatable, comparable and safer to deploy.", open: false,
-        items: [
-          ["Startup and maximum limits", "Control initial and maximum music, microphone and effect levels for more predictable startup.", "SAFE BOOT"],
-          ["Device modes and slots", "Store different system characters for singers, genres, rooms or events.", "DEVICE MEMORY"],
-          ["PC preset library", "Archive settings locally without immediately overwriting device memory.", "LOCAL LIBRARY"],
-          ["Readback and compare", "Start from actual device values and review changes before writing.", "CONTROLLED CHANGE"],
-          ["Mass preset upload", "Prepare and deploy a full preset set more efficiently.", "BULK DEPLOYMENT"],
-          ["USB HID and Bluetooth", "Use connection paths supported by the relevant hardware and firmware revision.", "LIVE CONTROL"],
-          ["U-disk and USB recording level", "Manage recording-level fields on supported hardware workflows.", "RECORDING"],
-          ["Dance / Mic Trigger", "Microphone-trigger controls appear in selected UI models and depend on confirmed firmware mapping.", "DEVICE DEPENDENT"],
-          ["Installer, Portable and SHA-256", "Choose an official Windows package and verify file identity before use.", "VERIFIED RELEASE"],
-        ],
-      },
-    ],
-    decisionEyebrow: "OWNING OR CONSIDERING A K500?",
-    decisionTitle: "Understand the complete processor first—then use SONKUPIK STUDIO to reveal its controls visually.",
-    decisionLead: "This page explains K500 value to prospective buyers while providing official software for owners of compatible units.",
-    primary: "Download for Windows",
-    secondary: "Review key features",
-    note: "Technical note: live read/write availability can vary by K500 revision, firmware and connection method. “Professional rack-style” describes functional integration and does not claim identical algorithms to any named effects brand.",
-    mobile: "Unlock deeper K500 control on Windows",
+    hero: {
+      eyebrow: "INTEGRATED KARAOKE DSP · PROFESSIONAL-STAGE WORKFLOW",
+      title: "Build stage-class karaoke sound. <span>One unit, the complete processing chain.</span>",
+      lead: "KTV PRO K500 combines vocal effects, feedback control, noise gating, compression, key transpose, parametric EQ, crossover, speaker delay and loudspeaker management into one DSP center for premium karaoke systems.",
+      primary: "See what the system improves",
+      secondary: "Already own a K500? Download software",
+      trust: ["A friendlier song key", "More polished vocals", "Better feedback control", "More precise speakers"],
+      meta: ["±7 key transpose", "2 vocal FX engines", "10 + 10 band mic PEQ"],
+    },
+    outcomes: {
+      eyebrow: "THE SOUND YOU ACTUALLY WANT",
+      title: "Not merely louder. More enjoyable, easier to sing through and safer to control.",
+      lead: "K500 turns technical processing into six outcomes singers, guests and operators can immediately understand.",
+      cards: [
+        ["01", "Clear, full vocals without harshness", "Common problem", "Thin, nasal or aggressive vocals disappear behind the music.", "With K500", "10-band PEQ per mic group, HPF/LPF and compression provide precise control over body, presence and clarity.", "VOCAL CLARITY"],
+        ["02", "Polished ambience instead of cheap echo", "Common problem", "Echo piles up, feels distant or reduces lyric intelligibility.", "With K500", "Reverb and echo operate as separate engines with pre-delay, decay, delay, repeat, filtering and dedicated effect PEQ.", "PREMIUM VOCAL SPACE"],
+        ["03", "The song key follows the singer", "Common problem", "Backing tracks sit too high or too low, making the singer work harder.", "With K500", "A -7 to +7 semitone transpose range moves the accompaniment without finding another track.", "SINGER COMFORT"],
+        ["04", "Better feedback control at useful volume", "Common problem", "Microphones ring when placement, gain or room acoustics are less than ideal.", "With K500", "FBX depth works with gain structure, PEQ, filters, gating and compression as one feedback-management system.", "FEEDBACK MANAGEMENT"],
+        ["05", "Bass, vocals and speakers feel coherent", "Common problem", "Sub bass dominates, rear speakers arrive late or every speaker feels disconnected.", "With K500", "Crossover, output PEQ, compression, routing and separate Surround L/R delay organize Main, Surround, Center and Subwoofer paths.", "ROOM COHERENCE"],
+        ["06", "Good tuning remains consistent", "Common problem", "Sound changes because operators must rebuild many settings from memory.", "With K500", "Startup limits, device modes, PC presets, readback, compare and permanent store preserve repeatable results.", "REPEATABLE SOUND"],
+      ],
+    },
+    rack: {
+      eyebrow: "ONE UNIT, MULTIPLE RACK FUNCTIONS",
+      title: "Professional system completeness without stacking separate processors.",
+      lead: "K500 integrates categories normally distributed across vocal effects, feedback, dynamics, key-change, equalization, crossover and loudspeaker processors.",
+      items: [
+        ["VOCAL EFFECT PROCESSOR", "Independent reverb + echo", "Shape vocal space with separate timing, tonal filters and PEQ."],
+        ["FEEDBACK & DYNAMICS", "FBX + gate + compressor", "Reduce idle noise, control peaks and manage feedback risk systematically."],
+        ["MUSIC PERFORMANCE", "Key transpose + source routing", "Match the song key and keep multiple playback sources consistent."],
+        ["LOUDSPEAKER MANAGEMENT", "Crossover + delay + multi-output", "Tune four speaker zones with their own processing and routing."],
+      ],
+    },
+    proof: {
+      eyebrow: "DSP DEPTH AT A GLANCE",
+      title: "Approachable enough for daily use, deep enough for serious tuning.",
+      items: [
+        ["±7", "semitone key transpose", "Moves music into a more comfortable vocal range."],
+        ["2", "vocal effect engines", "Reverb and echo can be shaped independently."],
+        ["10 + 10", "band Mic A/B PEQ", "Precise tuning for two microphone groups."],
+        ["4", "loudspeaker zones", "Main, Surround, Center and Subwoofer."],
+        ["7 / 5", "band output PEQ", "Dedicated tuning across primary and secondary outputs."],
+      ],
+    },
+    inventory: {
+      headingEyebrow: "EVERY FEATURE, ONE REFERENCE",
+      headingTitle: "Professional completeness without making first-time buyers get lost.",
+      headingLead: "This is the technical reference. Open only the group you need; the main product benefits have already been explained above.",
+      groups: [
+        ["01", "Music, media and singer comfort", "Input 1, Input 2, Bluetooth, U-disk and digital sources; source-specific gain; master music level; -7 to +7 key transpose; 7-band music PEQ; HPF/LPF and filter types; Bass, Mid, Mid Frequency and Treble on supported workflows; and compatible media transport controls."],
+        ["02", "Microphone and vocal processing", "Mic A and Mic B levels; 10-band PEQ for each group; EQ link; HPF/LPF; noise gate; compressor threshold, ratio, attack and release; shared FBX depth; top mic level; initial level and maximum mic limit."],
+        ["03", "Reverb and echo engines", "Reverb level, decay, pre-delay, HPF, LPF and 5-band PEQ. Echo level, repeat, delay, HPF, LPF and 5-band PEQ. Both effects can be distributed differently to every output."],
+        ["04", "Outputs, crossover and loudspeaker management", "Main L/R, Surround L/R, Center and Subwoofer; output level; mic, music, reverb and echo mix per path; output compression; HPF/LPF and filter types; 7-band Main PEQ plus 5-band PEQ for Surround, Center and Sub; separate Surround left/right delay alignment."],
+        ["05", "System, safe startup and recording", "Top music, mic and effect levels; initial and maximum startup limits; initial effect level; U-disk and USB recording level on supported hardware; Dance/Mic Trigger on matching mappings; preset checksum and device-state readback."],
+        ["06", "Presets, device modes and deployment", "Ten equipment-mode or device slots; device recall; PC presets; factory starting points; readback; compare; permanent store to a selected slot; mass preset upload; and libraries organized by singer, genre, room or event."],
+        ["07", "Connectivity and software distribution", "Compatible USB HID and Bluetooth live control; Windows 10/11 64-bit; Setup and Portable packages; official GitHub Releases resolution; and SHA-256 file identity verification."],
+      ],
+    },
+    decision: {
+      eyebrow: "FROM A SOUND GOAL TO A TUNABLE SYSTEM",
+      title: "For buyers, K500 is the processing center. For owners, SONKUPIK STUDIO is its control room.",
+      lead: "Understand the K500 sound architecture first. Once the hardware is available, use the Windows software to read, tune, compare and preserve settings visually.",
+      primary: "Explore loudspeaker management",
+      secondary: "Download SONKUPIK STUDIO",
+    },
+    mobile: "Already own a K500?",
+    mobileButton: "Download software",
+    claim: "K500 provides the processing tools for a professional-style karaoke workflow. Final results still depend on microphones, speakers, amplification, acoustics, gain structure, singing technique and tuning quality. Live read/write availability may vary by hardware revision, firmware and connection method.",
   },
 };
 
 function isAllowedReleaseUrl(value) {
   try {
     const url = new URL(value);
-    return url.protocol === "https:" &&
-      url.hostname === "github.com" &&
+    return url.protocol === "https:" && url.hostname === "github.com" &&
       url.pathname.startsWith(`/${RELEASE_REPOSITORY}/releases/`);
   } catch {
     return false;
@@ -244,7 +241,7 @@ function setText(selector, value) {
   document.querySelectorAll(selector).forEach((node) => { node.textContent = value; });
 }
 
-function loadConversionStyles() {
+function loadMaturityStyles() {
   if (document.querySelector('link[data-conversion-style]')) return;
   const link = document.createElement("link");
   link.rel = "stylesheet";
@@ -253,61 +250,162 @@ function loadConversionStyles() {
   document.head.append(link);
 }
 
-function createRackValueSection(c) {
+function updateMetadata(c) {
+  document.title = c.title;
+  const meta = document.querySelector('meta[name="description"]');
+  if (meta) meta.content = c.description;
+}
+
+function rewriteNavigation(c) {
+  const nav = document.querySelector(".desktop-nav");
+  if (!nav) return;
+  nav.innerHTML = c.nav.map(([href, label]) => `<a href="${href}">${label}</a>`).join("");
+}
+
+function rewriteHero(c) {
+  const hero = document.querySelector(".hero");
+  if (!hero) return;
+  const eyebrow = hero.querySelector(".hero-copy > .eyebrow");
+  const title = hero.querySelector(".hero-copy > h1");
+  const lead = hero.querySelector(".hero-copy > .hero-lead");
+  const actions = hero.querySelectorAll(".hero-actions .button");
+  const trust = hero.querySelectorAll(".micro-trust span");
+  const meta = hero.querySelectorAll(".release-meta span:not([data-release-date])");
+  if (eyebrow) eyebrow.textContent = c.hero.eyebrow;
+  if (title) title.innerHTML = c.hero.title;
+  if (lead) lead.textContent = c.hero.lead;
+  if (actions[0]) {
+    actions[0].removeAttribute("data-download");
+    actions[0].href = language === "id" ? "#hasil-suara" : "#sound-results";
+    actions[0].textContent = c.hero.primary;
+  }
+  if (actions[1]) {
+    actions[1].href = "#download";
+    actions[1].textContent = c.hero.secondary;
+  }
+  trust.forEach((node, index) => { if (c.hero.trust[index]) node.textContent = c.hero.trust[index]; });
+  meta.forEach((node, index) => { if (c.hero.meta[index]) node.textContent = c.hero.meta[index]; });
+}
+
+function rewriteTrustBand(c) {
+  const items = document.querySelectorAll(".trust-band .trust-item");
+  const cards = c.outcomes.cards.slice(0, 4);
+  items.forEach((item, index) => {
+    const card = cards[index];
+    if (!card) return;
+    const strong = item.querySelector("strong");
+    const span = item.querySelector("span");
+    if (strong) strong.textContent = card[1];
+    if (span) span.textContent = card[5];
+  });
+}
+
+function createOutcomesSection(c) {
   const section = document.createElement("section");
-  section.className = "section conversion-layer";
+  section.className = "section alt conversion-layer sound-outcomes";
+  section.id = language === "id" ? "hasil-suara" : "sound-results";
+  section.innerHTML = `
+    <div class="container">
+      <div class="conversion-head">
+        <span class="eyebrow">${c.outcomes.eyebrow}</span>
+        <h2>${c.outcomes.title}</h2>
+        <p>${c.outcomes.lead}</p>
+      </div>
+      <div class="outcome-grid">
+        ${c.outcomes.cards.map(([number,title,problemLabel,problem,resultLabel,result,tag]) => `
+          <article class="outcome-card">
+            <div class="outcome-card-top"><span>${number}</span><em>${tag}</em></div>
+            <h3>${title}</h3>
+            <dl>
+              <div><dt>${problemLabel}</dt><dd>${problem}</dd></div>
+              <div class="outcome-result"><dt>${resultLabel}</dt><dd>${result}</dd></div>
+            </dl>
+          </article>`).join("")}
+      </div>
+    </div>`;
+  return section;
+}
+
+function createRackSection(c) {
+  const section = document.createElement("section");
+  section.className = "section conversion-layer rack-convergence";
   section.id = language === "id" ? "satu-rack" : "one-rack";
   section.innerHTML = `
     <div class="container">
       <div class="rack-value">
         <div class="rack-value-copy">
-          <small>${c.rackEyebrow}</small>
-          <h3>${c.rackTitle}</h3>
-          <p>${c.rackLead}</p>
+          <small>${c.rack.eyebrow}</small>
+          <h3>${c.rack.title}</h3>
+          <p>${c.rack.lead}</p>
         </div>
         <div class="rack-value-stack">
-          ${c.rackItems.map(([tag,title,text]) => `<article><span>${tag}</span><strong>${title}</strong><p>${text}</p></article>`).join("")}
+          ${c.rack.items.map(([tag,title,text]) => `<article><span>${tag}</span><strong>${title}</strong><p>${text}</p></article>`).join("")}
         </div>
       </div>
     </div>`;
   return section;
 }
 
-function createInventorySection(c) {
+function createProofSection(c) {
   const section = document.createElement("section");
-  section.className = "section alt conversion-layer";
-  section.id = language === "id" ? "inventaris-fitur" : "feature-inventory";
+  section.className = "section conversion-layer proof-section";
+  section.id = language === "id" ? "bukti-dsp" : "dsp-proof";
   section.innerHTML = `
     <div class="container">
-      <div class="conversion-head">
-        <span class="eyebrow">${c.inventoryEyebrow}</span>
-        <h2>${c.inventoryTitle}</h2>
-        <p>${c.inventoryLead}</p>
+      <div class="proof-heading">
+        <span class="eyebrow">${c.proof.eyebrow}</span>
+        <h2>${c.proof.title}</h2>
       </div>
-      <div class="feature-inventory">
-        ${c.families.map((family) => `
-          <details class="feature-family" ${family.open ? "open" : ""}>
-            <summary>
-              <span class="family-number">${family.number}</span>
-              <span class="family-title"><strong>${family.title}</strong><span>${family.subtitle}</span></span>
-            </summary>
-            <div class="feature-family-body">
-              ${family.items.map(([title,text,tag]) => `<article class="feature-proof"><b>${title}</b><p>${text}</p><em>${tag}</em></article>`).join("")}
-            </div>
-          </details>`).join("")}
+      <div class="proof-metrics">
+        ${c.proof.items.map(([value,label,text]) => `<article><b>${value}</b><strong>${label}</strong><p>${text}</p></article>`).join("")}
       </div>
+    </div>`;
+  return section;
+}
+
+function findStaticInventory() {
+  const candidates = [...document.querySelectorAll(".feature-inventory")];
+  return candidates.find((node) => !node.closest(".conversion-layer")) || candidates[0] || null;
+}
+
+function upgradeInventory(c) {
+  const inventory = findStaticInventory();
+  if (!inventory) return;
+  const section = inventory.closest("section");
+  const heading = section?.querySelector(".section-heading");
+  if (heading) {
+    const eyebrow = heading.querySelector(".eyebrow");
+    const title = heading.querySelector("h2");
+    const lead = heading.querySelector(".section-lead");
+    if (eyebrow) eyebrow.textContent = c.inventory.headingEyebrow;
+    if (title) title.textContent = c.inventory.headingTitle;
+    if (lead) lead.textContent = c.inventory.headingLead;
+  }
+  inventory.innerHTML = c.inventory.groups.map(([number,title,text], index) => `
+    <details ${index === 0 ? "open" : ""}>
+      <summary><span>${number}</span>${title}</summary>
+      <div><p>${text}</p></div>
+    </details>`).join("");
+}
+
+function createDecisionSection(c) {
+  const section = document.createElement("section");
+  section.className = "section alt conversion-layer buyer-decision";
+  section.id = language === "id" ? "langkah-berikutnya" : "next-step";
+  section.innerHTML = `
+    <div class="container">
       <div class="decision-band">
         <div>
-          <small>${c.decisionEyebrow}</small>
-          <h3>${c.decisionTitle}</h3>
-          <p>${c.decisionLead}</p>
+          <small>${c.decision.eyebrow}</small>
+          <h3>${c.decision.title}</h3>
+          <p>${c.decision.lead}</p>
         </div>
         <div class="decision-actions">
-          <a class="button primary" data-download="setup" href="${RELEASE_PAGE}">${c.primary}</a>
-          <a class="button secondary" href="${language === "id" ? "#fitur" : "#features"}">${c.secondary}</a>
+          <a class="button secondary" href="${language === "id" ? "#speaker" : "#speakers"}">${c.decision.primary}</a>
+          <a class="button primary" data-download="setup" href="${RELEASE_PAGE}">${c.decision.secondary}</a>
         </div>
       </div>
-      <p class="claim-note">${c.note}</p>
+      <p class="claim-note">${c.claim}</p>
     </div>`;
   return section;
 }
@@ -316,20 +414,37 @@ function createMobileCta(c) {
   if (document.querySelector(".mobile-conversion-cta")) return;
   const bar = document.createElement("div");
   bar.className = "mobile-conversion-cta";
-  bar.innerHTML = `<span>${c.mobile}</span><a class="button primary" data-download="setup" href="${RELEASE_PAGE}">${language === "id" ? "Download" : "Download"}</a>`;
+  bar.innerHTML = `<span><b>${c.mobile}</b><small>${language === "id" ? "Gunakan control room Windows resmi" : "Use the official Windows control room"}</small></span><a class="button primary" data-download="setup" href="${RELEASE_PAGE}">${c.mobileButton}</a>`;
   document.body.append(bar);
+  const download = document.getElementById("download");
+  if (download && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(([entry]) => {
+      bar.classList.toggle("is-hidden", entry.isIntersecting);
+    }, { threshold: 0.08 });
+    observer.observe(download);
+  }
 }
 
-function installConversionLayer() {
-  const c = conversionCopy[language];
-  loadConversionStyles();
+function installLandingMaturityLayer() {
+  const c = landingCopy[language];
+  loadMaturityStyles();
+  updateMetadata(c);
+  rewriteNavigation(c);
+  rewriteHero(c);
+  rewriteTrustBand(c);
+  upgradeInventory(c);
+
   const main = document.querySelector("main");
-  if (!main || document.getElementById(language === "id" ? "inventaris-fitur" : "feature-inventory")) return;
+  if (!main || document.querySelector(".sound-outcomes")) return;
   const intro = document.getElementById(language === "id" ? "mengapa" : "why");
-  const featureSection = document.getElementById(language === "id" ? "fitur" : "features");
-  if (intro) intro.before(createRackValueSection(c));
-  if (featureSection) featureSection.after(createInventorySection(c));
-  else main.append(createInventorySection(c));
+  if (intro) {
+    intro.before(createOutcomesSection(c));
+    intro.before(createRackSection(c));
+  }
+  const features = document.getElementById(language === "id" ? "fitur" : "features");
+  if (features) features.after(createProofSection(c));
+  const download = document.getElementById("download");
+  if (download) download.before(createDecisionSection(c));
   createMobileCta(c);
 }
 
@@ -382,7 +497,7 @@ function updateStructuredData(release) {
     if (page && release.publishedAt) page.dateModified = release.publishedAt.slice(0, 10);
     node.textContent = JSON.stringify(data);
   } catch {
-    // Keep reviewed static structured data when dynamic enrichment fails.
+    // Keep the reviewed static data if enrichment fails.
   }
 }
 
@@ -459,6 +574,6 @@ async function copyCommand(event) {
 
 document.addEventListener("click", closeMobileMenu);
 document.addEventListener("click", copyCommand);
-installConversionLayer();
+installLandingMaturityLayer();
 decorateWindowsDownloads();
 resolveRelease();
