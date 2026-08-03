@@ -1,101 +1,470 @@
 <!doctype html>
-<html lang="en">
+<html lang="id" data-site-root="./">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>SONKUPIK STUDIO — KTV PRO K500 Karaoke DSP & Control</title>
-  <meta name="description" content="Discover KTV PRO K500 key control, studio-style vocal effects, feedback control, parametric EQ, multi-channel routing and official Windows software.">
+  <title>KTV PRO K500 — Prosesor Karaoke Lengkap + SONKUPIK STUDIO</title>
+  <meta name="description" content="KTV PRO K500 menyatukan vocal effect, anti-feedback, compressor, noise gate, key transpose, parametrik EQ, crossover dan loudspeaker management dalam satu alat karaoke.">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <meta name="author" content="Tutorial Mas Ari / MasArray">
   <meta name="theme-color" content="#060a10">
   <meta name="color-scheme" content="dark">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://masarray.github.io/sonkupik-studio/">
-  <link rel="alternate" hreflang="en" href="https://masarray.github.io/sonkupik-studio/">
-  <link rel="alternate" hreflang="id" href="https://masarray.github.io/sonkupik-studio/id/">
+  <link rel="alternate" hreflang="id" href="https://masarray.github.io/sonkupik-studio/">
+  <link rel="alternate" hreflang="en" href="https://masarray.github.io/sonkupik-studio/en/">
   <link rel="alternate" hreflang="x-default" href="https://masarray.github.io/sonkupik-studio/">
   <link rel="sitemap" type="application/xml" href="https://masarray.github.io/sonkupik-studio/sitemap.xml">
-  <meta property="og:title" content="KTV PRO K500 — More Than a Digital Karaoke Mixer">
-  <meta property="og:description" content="Key control, studio-style vocal effects, parametric EQ, feedback control, multi-channel routing and a modern Windows control room.">
+  <meta property="og:title" content="KTV PRO K500 — Satu Alat Menggantikan Satu Rack Karaoke">
+  <meta property="og:description" content="Vocal effect, feedback control, compressor, key transpose, parametric EQ, crossover dan speaker management—terintegrasi dalam satu prosesor karaoke.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://masarray.github.io/sonkupik-studio/">
   <meta property="og:site_name" content="SONKUPIK STUDIO">
   <meta property="og:image" content="https://masarray.github.io/sonkupik-studio/assets/sonkupik-studio-preview.svg">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:locale:alternate" content="id_ID">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="KTV PRO K500 + SONKUPIK STUDIO">
-  <meta name="twitter:description" content="A complete karaoke DSP workflow for comfortable singing, polished vocals and repeatable room tuning.">
+  <meta name="twitter:description" content="Satu pusat DSP karaoke untuk nada lagu, vokal, feedback, speaker dan preset.">
   <meta name="twitter:image" content="https://masarray.github.io/sonkupik-studio/assets/sonkupik-studio-preview.svg">
   <link rel="icon" href="assets/sonkupik-mark.svg" type="image/svg+xml">
   <link rel="manifest" href="site.webmanifest">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="product-features.css">
-  <script id="software-structured-data" type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://masarray.github.io/sonkupik-studio/#website","url":"https://masarray.github.io/sonkupik-studio/","name":"SONKUPIK STUDIO","inLanguage":"en"},{"@type":"Organization","@id":"https://masarray.github.io/sonkupik-studio/#publisher","name":"MasArray","alternateName":"Tutorial Mas Ari","url":"https://github.com/masarray"},{"@type":"Product","@id":"https://masarray.github.io/sonkupik-studio/#k500","name":"KTV PRO K500","brand":{"@type":"Brand","name":"Recording Tech"},"category":"Digital karaoke audio processor","description":"A karaoke-focused DSP processor with music key control, dedicated vocal effects, parametric equalization, dynamics, multi-source input and multi-channel output routing.","isRelatedTo":{"@id":"https://masarray.github.io/sonkupik-studio/#software"}},{"@type":"SoftwareApplication","@id":"https://masarray.github.io/sonkupik-studio/#software","name":"SONKUPIK STUDIO","applicationCategory":"MultimediaApplication","applicationSubCategory":"KTV PRO K500 control and preset management software","operatingSystem":"Windows 10/11 64-bit","softwareVersion":"0.8.44","description":"Professional Windows control, tuning and preset-management software for compatible KTV PRO K500 karaoke processors.","url":"https://masarray.github.io/sonkupik-studio/","downloadUrl":"https://github.com/masarray/sonkupik-studio/releases/latest","releaseNotes":"https://github.com/masarray/sonkupik-studio/releases/latest","isAccessibleForFree":true,"inLanguage":["en","id"],"featureList":["Music key control from -7 to +7 semitones","Dedicated reverb with level, decay, pre-delay, filters and parametric EQ","Dedicated echo with level, repeat, delay, filters and parametric EQ","10-band parametric EQ for Mic A and Mic B","7-band parametric EQ for music and main output","Noise gate, compressor and FBX feedback-control depth","Main, surround, center and subwoofer output management","Multiple music inputs and source-specific gain","Device and PC preset management","Live USB HID and Bluetooth control"],"publisher":{"@id":"https://masarray.github.io/sonkupik-studio/#publisher"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://github.com/masarray/sonkupik-studio/releases/latest"}}]}</script>
+  <script id="software-structured-data" type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@graph":[
+      {
+        "@type":"WebSite",
+        "@id":"https://masarray.github.io/sonkupik-studio/#website",
+        "url":"https://masarray.github.io/sonkupik-studio/",
+        "name":"SONKUPIK STUDIO",
+        "inLanguage":"id"
+      },
+      {
+        "@type":"Organization",
+        "@id":"https://masarray.github.io/sonkupik-studio/#publisher",
+        "name":"MasArray",
+        "alternateName":"Tutorial Mas Ari",
+        "url":"https://github.com/masarray"
+      },
+      {
+        "@type":"Product",
+        "@id":"https://masarray.github.io/sonkupik-studio/#k500",
+        "name":"KTV PRO K500",
+        "brand":{"@type":"Brand","name":"Recording Tech"},
+        "category":"Prosesor audio digital khusus karaoke",
+        "description":"Prosesor karaoke terintegrasi dengan key transpose musik, reverb dan echo terpisah, feedback control, noise gate, compressor, parametric EQ, crossover dan loudspeaker management multi-output.",
+        "isRelatedTo":{"@id":"https://masarray.github.io/sonkupik-studio/#software"}
+      },
+      {
+        "@type":"SoftwareApplication",
+        "@id":"https://masarray.github.io/sonkupik-studio/#software",
+        "name":"SONKUPIK STUDIO",
+        "applicationCategory":"MultimediaApplication",
+        "applicationSubCategory":"Software kontrol dan manajemen preset KTV PRO K500",
+        "operatingSystem":"Windows 10/11 64-bit",
+        "softwareVersion":"0.8.44",
+        "description":"Control room Windows untuk membaca, mengatur, membandingkan dan menyimpan parameter prosesor karaoke KTV PRO K500 yang kompatibel.",
+        "url":"https://masarray.github.io/sonkupik-studio/",
+        "downloadUrl":"https://github.com/masarray/sonkupik-studio/releases/latest",
+        "releaseNotes":"https://github.com/masarray/sonkupik-studio/releases/latest",
+        "isAccessibleForFree":true,
+        "inLanguage":["id","en"],
+        "featureList":[
+          "Key transpose musik -7 sampai +7 semitone",
+          "Reverb terpisah dengan level decay pre-delay filter dan PEQ",
+          "Echo terpisah dengan level repeat delay filter dan PEQ",
+          "Parametric EQ 10-band untuk Mic A dan Mic B",
+          "Parametric EQ untuk musik efek dan seluruh jalur output",
+          "Noise gate compressor dan FBX feedback-control depth",
+          "HPF LPF crossover dan pilihan tipe filter",
+          "Main Surround Center dan Subwoofer output management",
+          "Delay alignment kiri dan kanan untuk surround",
+          "Multi-source music routing dengan gain per sumber",
+          "Sepuluh mode atau slot perangkat",
+          "Preset PC mass upload readback compare dan permanent store",
+          "Live control melalui USB HID dan Bluetooth"
+        ],
+        "publisher":{"@id":"https://masarray.github.io/sonkupik-studio/#publisher"},
+        "offers":{
+          "@type":"Offer",
+          "price":"0",
+          "priceCurrency":"USD",
+          "availability":"https://schema.org/InStock",
+          "url":"https://github.com/masarray/sonkupik-studio/releases/latest"
+        }
+      }
+    ]
+  }
+  </script>
   <script src="app.js" defer></script>
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to main content</a>
-<header class="site-header"><div class="container nav-shell">
-  <a class="brand" href="./" aria-label="SONKUPIK STUDIO home"><img class="brand-mark" src="assets/sonkupik-mark.svg" width="34" height="34" alt=""><span class="brand-copy"><strong>SONKUPIK STUDIO</strong><small>KTV PRO K500 control room</small></span></a>
-  <nav class="desktop-nav" aria-label="Main navigation"><a href="#k500">What is K500?</a><a href="#sound">Sound features</a><a href="#control">Room control</a><a href="#workflow">Workflow</a><a href="#download">Download</a></nav>
-  <div class="nav-actions"><div class="lang-switch" aria-label="Language"><a href="id/" lang="id">ID</a><a href="./" lang="en" aria-current="page">EN</a></div><a class="button primary compact" data-download="setup" href="https://github.com/masarray/sonkupik-studio/releases/latest">Download</a></div>
-</div></header>
-<div class="release-strip" role="status" aria-live="polite"><div class="container release-strip-inner"><span class="status-dot" aria-hidden="true"></span><strong data-release-version>v0.8.44</strong><span data-release-status>Checking the official distribution…</span><a data-release-link href="https://github.com/masarray/sonkupik-studio/releases/latest">Release details</a></div></div>
+<a class="skip-link" href="#main">Lewati ke konten utama</a>
+
+<header class="site-header">
+  <div class="container nav-shell">
+    <a class="brand" href="./" aria-label="Beranda SONKUPIK STUDIO">
+      <img class="brand-mark" src="assets/sonkupik-mark.svg" width="34" height="34" alt="">
+      <span class="brand-copy"><strong>SONKUPIK STUDIO</strong><small>Control room KTV PRO K500</small></span>
+    </a>
+    <nav class="desktop-nav" aria-label="Navigasi utama">
+      <a href="#mengapa">Mengapa K500</a>
+      <a href="#fitur">Fitur lengkap</a>
+      <a href="#speaker">Sistem speaker</a>
+      <a href="#software">Software</a>
+      <a href="#download">Download</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="lang-switch" aria-label="Bahasa">
+        <a href="./" lang="id" aria-current="page">ID</a>
+        <a href="en/" lang="en">EN</a>
+      </div>
+      <a class="button primary compact" data-download="setup" href="https://github.com/masarray/sonkupik-studio/releases/latest">Download</a>
+    </div>
+  </div>
+</header>
+
+<div class="release-strip" role="status" aria-live="polite">
+  <div class="container release-strip-inner">
+    <span class="status-dot" aria-hidden="true"></span>
+    <strong data-release-version>v0.8.44</strong>
+    <span data-release-status>Memeriksa distribusi resmi…</span>
+    <a data-release-link href="https://github.com/masarray/sonkupik-studio/releases/latest">Detail rilis</a>
+  </div>
+</div>
+
 <main id="main">
-<section class="hero"><div class="container hero-grid">
-  <div class="hero-copy"><span class="eyebrow">KTV PRO K500 + SONKUPIK STUDIO</span><h1>More than a digital mixer. <span>A complete karaoke sound processor.</span></h1><p class="hero-lead">Move the song into a comfortable key, give the voice polished space, control feedback, shape every signal path and route the room from one karaoke-focused DSP platform—then reveal its full depth through a modern Windows control room.</p><div class="hero-actions"><a class="button primary" data-download="setup" href="https://github.com/masarray/sonkupik-studio/releases/latest">Download Setup for Windows</a><a class="button secondary" href="#k500">Discover K500</a></div><p class="micro-trust"><span>Key shift ±7 semitones</span><span>Dedicated reverb + echo</span><span>Mic A/B parametric EQ</span><span>Multi-channel room routing</span></p><div class="release-meta"><span>32-bit DSP platform</span><span>24-bit / 48 kHz conversion</span><span>Windows 10/11 x64</span><span data-release-date>Latest public release</span></div></div>
-  <figure class="product-visual"><div class="visual-halo" aria-hidden="true"></div><div class="floating-chip chip-one"><strong>Key control ±7</strong><span>Move the music into a more comfortable singing range</span></div><div class="floating-chip chip-two"><strong>Dual vocal FX</strong><span>Shape reverb and echo as separate professional-style engines</span></div><div class="studio-window">
-    <div class="window-bar"><div class="window-brand"><img src="assets/sonkupik-mark.svg" alt=""><span>SONKUPIK STUDIO</span></div><div class="session-meta"><span>K500 ENGINEERING SESSION</span><b>ONLINE</b></div></div>
-    <div class="device-bar"><span><i class="online-dot"></i>DEVICE CONNECTED</span><strong>K500 · LIVE PRESET 03 · KARAOKE ARTIST</strong><em>USB HID</em><button type="button">READ DEVICE</button></div>
-    <div class="studio-body"><aside class="studio-sidebar"><div class="side-label">Signal chain</div><div class="side-row active"><i></i>Music Input<b>LIVE</b></div><div class="side-row"><i></i>Microphone<b>A / B</b></div><div class="side-row"><i></i>Reverb + Echo<b>2 FX</b></div><div class="side-row"><i></i>Main / Surround<b>ROOM</b></div><div class="side-row"><i></i>Center / Sub<b>ZONE</b></div><div class="side-label lower">Preset workspace</div><div class="side-row active"><i></i>Karaoke Artist<b>PC</b></div></aside><div class="studio-main">
-      <div class="panel-head"><span>MUSIC KEY · VOCAL FX · PARAMETRIC EQ</span><strong>LIVE PARAMETER LINK</strong></div>
-      <div class="meter-row"><div class="meter"><b>KEY</b><span style="--level:58%"></span><em>-2</em></div><div class="meter"><b>REV</b><span style="--level:68%"></span><em>42</em></div><div class="meter"><b>ECHO</b><span style="--level:54%"></span><em>31</em></div><div class="meter"><b>FBX</b><span style="--level:72%"></span><em>12</em></div></div>
-      <div class="eq-panel"><div class="eq-grid"></div><svg viewBox="0 0 600 210" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="eqg" x1="0" x2="1"><stop stop-color="#69dfd1"/><stop offset=".55" stop-color="#81a8ff"/><stop offset="1" stop-color="#c49bff"/></linearGradient></defs><path d="M0 124 C58 122 80 80 122 94 S178 142 225 116 S280 76 332 94 S400 134 448 105 S514 72 600 90" fill="none" stroke="url(#eqg)" stroke-width="3"/><path d="M0 124 C58 122 80 80 122 94 S178 142 225 116 S280 76 332 94 S400 134 448 105 S514 72 600 90 L600 210 L0 210Z" fill="url(#eqg)" opacity=".08"/><g fill="#091019" stroke="#8de5db" stroke-width="3"><circle cx="122" cy="94" r="6"/><circle cx="225" cy="116" r="6"/><circle cx="332" cy="94" r="6"/><circle cx="448" cy="105" r="6"/></g></svg></div>
-      <div class="control-row"><div class="control"><span class="knob"></span><b>Pitch</b><small>-2 semitone</small></div><div class="control"><span class="knob"></span><b>Pre-delay</b><small>48 ms</small></div><div class="control"><span class="knob"></span><b>Decay</b><small>1.8 s</small></div><div class="control"><span class="knob"></span><b>Repeat</b><small>28%</small></div><div class="control"><span class="knob"></span><b>Mic EQ</b><small>10 bands</small></div></div>
-      <div class="action-bar"><span>Read the processor, tune with context, then save the result</span><button type="button">COMPARE</button><button type="button">SAVE TO PC</button><button class="accent" type="button">WRITE PRESET</button></div>
-    </div></div>
-  </div><figcaption>Interface illustration based on controls mapped by SONKUPIK STUDIO. Availability can vary by hardware and firmware revision.</figcaption></figure>
-</div></section>
+<section class="hero hero-convergence">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">KTV PRO K500 + SONKUPIK STUDIO</span>
+      <h1>Satu alat menggantikan <span>satu rack pemrosesan karaoke.</span></h1>
+      <p class="hero-lead">K500 menyatukan vocal effect, feedback control, compressor, noise gate, key transpose, parametric EQ, crossover, speaker delay dan loudspeaker management ke dalam satu prosesor yang siap dipakai untuk karaoke berkelas profesional.</p>
+      <div class="hero-actions">
+        <a class="button primary" data-download="setup" href="https://github.com/masarray/sonkupik-studio/releases/latest">Download SONKUPIK STUDIO</a>
+        <a class="button secondary" href="#mengapa">Kenali K500</a>
+      </div>
+      <p class="micro-trust">
+        <span>Key shift ±7 semitone</span>
+        <span>Reverb + echo terpisah</span>
+        <span>Mic A/B PEQ 10-band</span>
+        <span>Main · Surround · Center · Sub</span>
+      </p>
+      <div class="release-meta">
+        <span>Windows 10/11 x64</span>
+        <span>Setup + Portable</span>
+        <span>USB HID + Bluetooth</span>
+        <span data-release-date>Rilis publik terbaru</span>
+      </div>
+    </div>
 
-<section class="trust-band" aria-label="K500 highlights"><div class="container trust-grid"><div class="trust-item"><strong>Sing in a friendlier key</strong><span>Transpose the music from -7 to +7 semitones without changing the singer.</span></div><div class="trust-item"><strong>Build premium vocal space</strong><span>Separate reverb and echo engines provide far more control than one effect knob.</span></div><div class="trust-item"><strong>Shape voice and music precisely</strong><span>Parametric EQ, filters, gate, compressor and feedback-control depth.</span></div><div class="trust-item"><strong>Tune the whole room</strong><span>Manage main, surround, center and subwoofer paths as one system.</span></div></div></section>
-
-<section id="k500" class="section product-intro"><div class="container product-intro-grid">
-  <div><span class="eyebrow">What is KTV PRO K500?</span><h2>A karaoke processor built around the singer—not a general-purpose mixer with echo added.</h2><p class="section-lead">K500 sits between your music sources, microphones and speaker system. Its DSP handles the functions that make karaoke easier and more enjoyable: music key control, vocal ambience, feedback management, tonal correction, dynamics, crossover and room output distribution.</p><div class="product-facts"><span><b>Music</b> analog, Bluetooth, U-disk/USB and digital source workflows</span><span><b>Voice</b> multiple microphone inputs grouped into Mic A and Mic B processing</span><span><b>Room</b> main, surround, center and subwoofer output management</span><span><b>Control</b> hardware operation plus compatible PC and Bluetooth workflows</span></div></div>
-  <div class="signal-story" aria-label="K500 signal journey"><div><i>01</i><strong>Choose the source</strong><span>TV, player, Bluetooth, USB or digital audio</span></div><div><i>02</i><strong>Match the song key</strong><span>Move accompaniment up or down for the singer</span></div><div><i>03</i><strong>Polish the vocal</strong><span>EQ, dynamics, feedback control, reverb and echo</span></div><div><i>04</i><strong>Build the room</strong><span>Balance each output and save a repeatable preset</span></div></div>
-</div></section>
-
-<section id="sound" class="section alt"><div class="container">
-  <div class="section-heading centered"><span class="eyebrow">Karaoke-specific sound features</span><h2>Functions that change the singing experience—not only the meter levels.</h2><p class="section-lead">The controls below are mapped in the K500 preset and live-control model used by SONKUPIK STUDIO.</p></div>
-  <div class="consumer-feature-grid">
-    <article class="consumer-feature feature-key"><span class="feature-kicker">01 · MUSIC KEY</span><h3>Lower or raise the song to fit the singer</h3><p>The accompaniment can be shifted from <strong>-7 to +7 semitones</strong>. A song that feels too high or too low becomes easier to perform without searching for another backing track.</p><div class="key-tape" aria-label="Key range"><span>♭7</span><span>♭4</span><b>0</b><span>♯4</span><span>♯7</span></div><small>This is music transposition, not automatic vocal Auto-Tune.</small></article>
-    <article class="consumer-feature feature-fx"><span class="feature-kicker">02 · VOCAL SPACE</span><h3>Studio-style reverb and echo, tuned separately</h3><p>Reverb includes level, decay, pre-delay and tone filtering. Echo includes level, repeat, delay and tone filtering. Both also have dedicated parametric EQ sections.</p><div class="fx-pills"><span>Pre-delay</span><span>Decay</span><span>Delay</span><span>Repeat</span><span>HPF / LPF</span><span>5-band PEQ</span></div><small>The result can be tight and intimate, wide and luxurious, or rhythmic—without relying on one generic echo knob.</small></article>
-    <article class="consumer-feature"><span class="feature-kicker">03 · VOCAL CONTROL</span><h3>Make microphones clearer, steadier and safer</h3><p>Mic A and Mic B each have <strong>10-band parametric EQ</strong>. The microphone path also includes HPF/LPF, noise gate, compressor and shared FBX depth for feedback-control tuning.</p><div class="mini-chain"><span>Gate</span><i>→</i><span>10-band PEQ</span><i>→</i><span>Compressor</span><i>→</i><span>FBX</span></div></article>
-    <article class="consumer-feature"><span class="feature-kicker">04 · MUSIC CONTROL</span><h3>Give backing tracks weight without covering the voice</h3><p>Music has source-specific gain, key control, 7-band parametric EQ, HPF/LPF and fast Bass, Mid, Mid Frequency and Treble controls.</p><div class="source-list"><span>Input 1</span><span>Input 2</span><span>Bluetooth</span><span>U-disk</span><span>Digital</span></div></article>
+    <figure class="integrated-rack" aria-label="Fungsi beberapa perangkat audio yang disatukan ke dalam KTV PRO K500">
+      <div class="rack-grid">
+        <div class="rack-module"><b>VOCAL FX</b><span>Reverb · Echo</span></div>
+        <div class="rack-module"><b>FEEDBACK</b><span>FBX control</span></div>
+        <div class="rack-module"><b>DYNAMICS</b><span>Gate · Compressor</span></div>
+        <div class="rack-module"><b>KEY CONTROL</b><span>-7 sampai +7</span></div>
+        <div class="rack-core">
+          <img src="assets/sonkupik-mark.svg" alt="">
+          <small>INTEGRATED KARAOKE DSP</small>
+          <strong>KTV PRO K500</strong>
+          <span>Music · Vocal · Effects · Room</span>
+        </div>
+        <div class="rack-module"><b>PARAMETRIC EQ</b><span>Mic · Music · FX</span></div>
+        <div class="rack-module"><b>CROSSOVER</b><span>HPF · LPF</span></div>
+        <div class="rack-module"><b>SPEAKER DELAY</b><span>Room alignment</span></div>
+        <div class="rack-module"><b>LOUDSPEAKER</b><span>4 output zones</span></div>
+      </div>
+      <figcaption>Fungsi yang biasanya tersebar di beberapa perangkat rack, disatukan ke dalam satu workflow karaoke.</figcaption>
+    </figure>
   </div>
-</div></section>
+</section>
 
-<section id="control" class="section"><div class="container">
-  <div class="split-heading"><div class="section-heading"><span class="eyebrow">Whole-room DSP</span><h2>Control what reaches every speaker zone.</h2></div><p>K500 is designed beyond a stereo master output. It exposes dedicated paths for Main L/R, Surround L/R, Center and Subwoofer, with channel-specific processing and routing.</p></div>
-  <div class="room-routing">
-    <article><span>MAIN L / R</span><h3>Primary listening image</h3><p>Independent left/right level, mic, music, reverb and echo mix, compressor and 7-band PEQ.</p></article>
-    <article><span>SURROUND L / R</span><h3>Room depth and timing</h3><p>Independent level and mix, compressor, 5-band PEQ and separate left/right delay alignment.</p></article>
-    <article><span>CENTER</span><h3>Focused vocal support</h3><p>Dedicated output level, mic/music/effect balance, compressor and 5-band PEQ.</p></article>
-    <article><span>SUBWOOFER</span><h3>Controlled low-frequency impact</h3><p>Dedicated mix and level, compressor, HPF/LPF crossover control and 5-band PEQ.</p></article>
+<section class="trust-band" aria-label="Ringkasan nilai K500">
+  <div class="container trust-grid">
+    <div class="trust-item"><strong>Nada lagu lebih nyaman</strong><span>Transpose musik agar sesuai jangkauan suara penyanyi.</span></div>
+    <div class="trust-item"><strong>Vokal lebih mewah</strong><span>Bentuk ambience dengan reverb dan echo yang benar-benar terpisah.</span></div>
+    <div class="trust-item"><strong>Feedback lebih terkendali</strong><span>Gabungkan FBX, EQ, filter, gate dan gain structure yang benar.</span></div>
+    <div class="trust-item"><strong>Ruangan lebih rapi</strong><span>Atur jalur Main, Surround, Center dan Subwoofer secara terpisah.</span></div>
   </div>
-  <div class="beyond-mixer"><div><span class="eyebrow">Beyond a normal digital mixer</span><h2>One system for performance, room tuning and repeatable operation.</h2></div><div class="comparison-grid"><span>Typical mixer task</span><strong>K500 karaoke workflow</strong><span>Balance input volume</span><strong>Balance + transpose the song key</strong><span>Add a general effect</span><strong>Separate reverb and echo with detailed timing and tone</strong><span>Basic channel EQ</span><strong>Dedicated PEQ across microphones, music, effects and outputs</strong><span>Stereo master output</span><strong>Multi-channel room and subwoofer routing</strong><span>Manual recall</span><strong>Device slots, PC presets and mass deployment</strong></div></div>
-</div></section>
+</section>
 
-<section id="capabilities" class="section alt"><div class="container"><div class="section-heading centered"><span class="eyebrow">The technical foundation</span><h2>Serious DSP underneath an approachable karaoke workflow.</h2></div><div class="technical-foundation"><article><b>32-bit</b><span>high-performance DSP platform</span></article><article><b>24-bit / 48 kHz</b><span>digital audio conversion and sampling</span></article><article><b>10 + 10 bands</b><span>parametric EQ for Mic A and Mic B</span></article><article><b>7 bands</b><span>parametric EQ for music and main output</span></article><article><b>5 bands</b><span>PEQ for surround, center, sub, reverb and echo</span></article><article><b>2 engines</b><span>independent reverb and echo processing</span></article></div></div></section>
+<section id="mengapa" class="section product-intro">
+  <div class="container product-intro-grid">
+    <div>
+      <span class="eyebrow">Bukan sekadar digital mixer</span>
+      <h2>K500 adalah pusat DSP yang dibangun khusus untuk pengalaman karaoke.</h2>
+      <p class="section-lead">Digital mixer biasa berfokus pada mencampur level input. K500 melangkah lebih jauh: menyesuaikan nada lagu, membentuk karakter vokal, mengendalikan feedback, memproses dynamics, membagi frekuensi speaker, menyelaraskan delay ruangan dan menyimpan hasilnya sebagai preset.</p>
+      <div class="product-facts">
+        <span><b>Untuk penyanyi</b> lagu lebih nyaman, vokal lebih menyatu dan ambience lebih meyakinkan</span>
+        <span><b>Untuk pemilik</b> satu unit menggantikan banyak fungsi rack dan setting dapat diulang</span>
+        <span><b>Untuk teknisi</b> setiap jalur memiliki parameter, kurva, filter dan routing yang jelas</span>
+        <span><b>Untuk operator</b> mode perangkat dan preset mengurangi setting ulang dari nol</span>
+      </div>
+    </div>
+    <div class="signal-story" aria-label="Perjalanan sinyal K500">
+      <div><i>01</i><strong>Pilih sumber musik</strong><span>Input 1, Input 2, Bluetooth, U-disk atau digital</span></div>
+      <div><i>02</i><strong>Sesuaikan nada lagu</strong><span>Turunkan atau naikkan hingga tujuh semitone</span></div>
+      <div><i>03</i><strong>Bangun vokal</strong><span>Gate, EQ, compressor, feedback control, reverb dan echo</span></div>
+      <div><i>04</i><strong>Tata sistem speaker</strong><span>Main, Surround, Center dan Subwoofer dengan processing masing-masing</span></div>
+      <div><i>05</i><strong>Simpan hasilnya</strong><span>Preset PC, mode perangkat dan write ke slot yang dituju</span></div>
+    </div>
+  </div>
+</section>
 
-<section id="workflow" class="section"><div class="container"><div class="section-heading centered"><span class="eyebrow">SONKUPIK STUDIO workflow</span><h2>Connect. Read. Tune. Compare. Save.</h2><p class="section-lead">The software turns K500's deep parameter set into a visible and repeatable workflow.</p></div><div class="workflow"><article><span class="workflow-index">01</span><h3>Connect</h3><p>Use the supported USB HID or Bluetooth path and confirm the live device state.</p></article><article><span class="workflow-index">02</span><h3>Read</h3><p>Start from the values currently stored in the processor instead of guessing.</p></article><article><span class="workflow-index">03</span><h3>Tune</h3><p>Adjust music, microphones, effects, dynamics, EQ and room outputs with full context.</p></article><article><span class="workflow-index">04</span><h3>Preserve</h3><p>Compare, save a PC copy and write only to the intended device preset slot.</p></article></div></div></section>
+<section id="fitur" class="section alt">
+  <div class="container">
+    <div class="section-heading centered">
+      <span class="eyebrow">Transformasi yang langsung terasa</span>
+      <h2>Fitur teknis yang diterjemahkan menjadi pengalaman karaoke yang lebih baik.</h2>
+      <p class="section-lead">Setiap blok di bawah ini mewakili fungsi yang dipetakan dari model preset dan live-control K500 yang digunakan SONKUPIK STUDIO.</p>
+    </div>
 
-<section class="section alt"><div class="container"><div class="section-heading"><span class="eyebrow">Operational features</span><h2>Built for daily karaoke use, not only one-time tuning.</h2></div><div class="operations-grid"><article><h3>Safe startup limits</h3><p>Control initial and maximum music or microphone levels so the system starts more predictably.</p></article><article><h3>Preset library</h3><p>Keep factory starting points separate from user-owned presets and recall them by room, performer or event.</p></article><article><h3>Mass preset upload</h3><p>Prepare a complete slot set and deploy it deliberately instead of loading presets one by one.</p></article><article><h3>Recording level control</h3><p>Manage U-disk and USB recording level fields where supported by the hardware workflow.</p></article></div></div></section>
+    <div class="consumer-feature-grid">
+      <article class="consumer-feature feature-key">
+        <span class="feature-kicker">01 · KEY TRANSPOSE</span>
+        <h3>Lagu terlalu tinggi atau terlalu rendah? Pindahkan nadanya.</h3>
+        <p>Musik dapat ditranspose dari <strong>-7 sampai +7 semitone</strong>. Penyanyi mendapat nada yang lebih nyaman tanpa harus mencari versi backing track lain.</p>
+        <div class="key-tape" aria-label="Rentang key transpose"><span>♭7</span><span>♭4</span><b>0</b><span>♯4</span><span>♯7</span></div>
+        <small>Key transpose mengubah nada musik pengiring; ini bukan Auto-Tune untuk suara penyanyi.</small>
+      </article>
 
-<section id="download" class="section"><div class="container download-shell"><div><span class="eyebrow">Official Windows control software</span><h2>Unlock the K500 from a modern screen.</h2><p class="section-lead">Setup is recommended for normal daily use and faster startup. Portable is useful when installation is not possible.</p><div class="compat-table"><div class="compat-row"><strong>Operating system</strong><span>Windows 10/11, 64-bit</span></div><div class="compat-row"><strong>Target hardware</strong><span>Compatible KTV PRO K500-family workflows</span></div><div class="compat-row"><strong>Connection</strong><span>Supported USB HID or Bluetooth path, depending on device</span></div><div class="compat-row"><strong>Distribution</strong><span>Official Setup, Portable and SHA-256 files</span></div></div><div class="verify-box"><strong>Verify before opening</strong><p>Download the checksum file from the same release and compare the exact filename.</p><code>Get-FileHash .\SONKUPIK-STUDIO-*.exe -Algorithm SHA256</code></div></div><div class="release-panel"><div class="release-panel-head"><span data-release-name>SONKUPIK STUDIO</span><strong data-release-version>v0.8.44</strong></div><div class="download-option"><div><h3>Windows Setup <span class="tag">RECOMMENDED</span></h3><p>Fastest regular startup, installed shortcuts and a permanent application directory. <span data-setup-size></span></p></div><a class="button primary" data-download="setup" href="https://github.com/masarray/sonkupik-studio/releases/latest">Download Setup</a></div><div class="download-option"><div><h3>Windows Portable</h3><p>No installation required; slower cold start because the runtime is unpacked. <span data-portable-size></span></p></div><a class="button secondary" data-download="portable" href="https://github.com/masarray/sonkupik-studio/releases/latest">Download Portable</a></div><div class="download-option"><div><h3>SHA-256 checksums</h3><p>Verify the identity of the exact release asset you downloaded.</p></div><a class="button secondary" data-download="checksums" href="https://github.com/masarray/sonkupik-studio/releases/latest">Checksums</a></div></div></div></section>
+      <article class="consumer-feature feature-fx">
+        <span class="feature-kicker">02 · VOCAL EFFECT PROCESSOR</span>
+        <h3>Reverb dan echo seperti dua unit effect yang berdiri sendiri.</h3>
+        <p>Reverb mempunyai level, decay, pre-delay dan tonal filtering. Echo mempunyai level, repeat, delay dan tonal filtering. Keduanya memiliki <strong>parametric EQ 5-band</strong> masing-masing.</p>
+        <div class="fx-pills"><span>Pre-delay</span><span>Decay</span><span>Delay</span><span>Repeat</span><span>HPF / LPF</span><span>PEQ 5-band</span></div>
+        <small>Bentuk vokal yang rapat, luas, mewah atau ritmis tanpa bergantung pada satu knob echo generik.</small>
+      </article>
 
-<section id="faq" class="section alt"><div class="container"><div class="section-heading centered"><span class="eyebrow">Product clarity</span><h2>Frequently asked questions</h2></div><div class="faq"><details><summary>Is the ±7 key control the same as Auto-Tune?</summary><p>No. It transposes the music accompaniment up or down to suit the singer's range. It does not automatically correct the pitch of the microphone voice.</p></details><details><summary>Why are the vocal effects described as professional-style?</summary><p>Because reverb and echo are separate engines with timing, amount, filtering and dedicated EQ controls—the same categories engineers use to build vocal ambience. No claim is made that K500 duplicates a specific premium brand, artist or studio chain.</p></details><details><summary>Will it work with every karaoke processor?</summary><p>No universal compatibility is implied. SONKUPIK STUDIO targets compatible KTV PRO K500-family workflows; device revision, firmware, connection method and Windows configuration can affect behavior.</p></details><details><summary>Which Windows package should I use?</summary><p>Use Setup for normal daily operation and faster startup. Use Portable when installation is not possible or a self-contained copy is required.</p></details><details><summary>Does the website upload audio or include tracking?</summary><p>The website does not process audio and contains no advertising or analytics code. It contacts GitHub only to resolve current official release information.</p></details></div></div></section>
+      <article class="consumer-feature">
+        <span class="feature-kicker">03 · MIC PROCESSING</span>
+        <h3>Vokal lebih jelas, stabil dan tidak mudah meledak.</h3>
+        <p>Mic A dan Mic B masing-masing mempunyai <strong>parametric EQ 10-band</strong>. Jalur mic juga menyediakan HPF/LPF, noise gate, compressor dengan threshold, ratio, attack dan release, serta kontrol FBX.</p>
+        <div class="mini-chain"><span>Gate</span><i>→</i><span>PEQ 10-band</span><i>→</i><span>Compressor</span><i>→</i><span>FBX</span></div>
+      </article>
+
+      <article class="consumer-feature">
+        <span class="feature-kicker">04 · MUSIC PROCESSING</span>
+        <h3>Musik tetap berbobot tanpa menutupi suara penyanyi.</h3>
+        <p>K500 menyediakan gain per sumber, key control, parametric EQ 7-band dan filter HPF/LPF untuk jalur musik. Input dapat dipilih sesuai sumber yang digunakan.</p>
+        <div class="source-list"><span>Input 1</span><span>Input 2</span><span>Bluetooth</span><span>U-disk</span><span>Digital</span></div>
+      </article>
+
+      <article class="consumer-feature">
+        <span class="feature-kicker">05 · FEEDBACK MANAGEMENT</span>
+        <h3>Kontrol feedback bukan satu tombol ajaib—melainkan satu sistem.</h3>
+        <p>FBX depth bekerja bersama gain structure, parametric EQ, HPF/LPF, noise gate dan compressor. Kombinasi ini memberi teknisi alat yang lebih lengkap untuk mengurangi risiko denging.</p>
+        <small>Efektivitas tetap bergantung pada posisi mikrofon, speaker, akustik ruangan dan tuning yang benar.</small>
+      </article>
+
+      <article class="consumer-feature">
+        <span class="feature-kicker">06 · PRESET & OPERATIONS</span>
+        <h3>Setting bagus tidak hilang dan tidak harus dibuat ulang.</h3>
+        <p>Recall sepuluh mode perangkat, baca nilai dari hardware, simpan preset PC, compare perubahan, write permanen ke slot tujuan dan deploy kumpulan preset dengan mass upload.</p>
+        <div class="fx-pills"><span>10 mode</span><span>Readback</span><span>Compare</span><span>PC preset</span><span>Permanent store</span><span>Mass upload</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="speaker" class="section">
+  <div class="container">
+    <div class="split-heading">
+      <div class="section-heading">
+        <span class="eyebrow">Crossover & loudspeaker management</span>
+        <h2>Bukan berhenti di master stereo—K500 menata seluruh sistem speaker.</h2>
+      </div>
+      <p>Setiap jalur output dapat menerima campuran mic, music, reverb dan echo yang berbeda. Processing per zona membantu membangun coverage ruangan yang lebih rapi dan terkendali.</p>
+    </div>
+
+    <div class="room-routing">
+      <article><span>MAIN L / R</span><h3>Gambar suara utama</h3><p>Level kiri/kanan, campuran mic-music-effect, compressor, HPF/LPF dan PEQ 7-band.</p></article>
+      <article><span>SURROUND L / R</span><h3>Kedalaman dan alignment</h3><p>Level dan campuran terpisah, compressor, PEQ 5-band serta delay kiri/kanan untuk penyelarasan waktu.</p></article>
+      <article><span>CENTER</span><h3>Fokus vokal tambahan</h3><p>Output level, campuran mic-music-effect, compressor, crossover dan PEQ 5-band.</p></article>
+      <article><span>SUBWOOFER</span><h3>Low frequency yang terkendali</h3><p>Level dan campuran khusus, compressor, HPF/LPF crossover dan PEQ 5-band.</p></article>
+    </div>
+
+    <div class="system-note">
+      <strong>Penting:</strong>
+      <p>K500 adalah prosesor line-level, bukan power amplifier. Ia dapat menjadi pusat pemisahan output menuju speaker aktif atau power amplifier yang sesuai. Speaker pasif tetap memerlukan amplifier.</p>
+    </div>
+
+    <div class="beyond-mixer">
+      <div><span class="eyebrow">Satu unit, banyak fungsi rack</span><h2>Bandingkan workflow-nya.</h2></div>
+      <div class="comparison-grid">
+        <span>Vocal effect terpisah</span><strong>Reverb + echo engine di dalam K500</strong>
+        <span>Feedback controller</span><strong>FBX + EQ + filter + dynamics</strong>
+        <span>Graphic / parametric EQ</span><strong>PEQ khusus di mic, music, effect dan output</strong>
+        <span>Compressor / gate</span><strong>Dynamics terintegrasi pada mic dan output</strong>
+        <span>Key changer</span><strong>Transpose musik -7 sampai +7 semitone</strong>
+        <span>Crossover</span><strong>HPF/LPF per jalur dengan pilihan tipe filter</strong>
+        <span>Speaker delay processor</span><strong>Delay alignment Surround L/R</strong>
+        <span>Loudspeaker processor</span><strong>Main, Surround, Center dan Subwoofer management</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="software" class="section alt">
+  <div class="container software-story-grid">
+    <div>
+      <span class="eyebrow">SONKUPIK STUDIO</span>
+      <h2>K500 yang kompleks menjadi control room yang mudah dibaca.</h2>
+      <p class="section-lead">Software ini tidak menggantikan DSP di dalam K500. SONKUPIK STUDIO membuka, memvisualkan dan mengelola parameter K500 melalui workspace Windows yang lebih cepat dipahami daripada display perangkat yang kecil.</p>
+      <div class="software-benefits">
+        <span><b>Read</b> tarik nilai aktual dari perangkat sebelum mengubah apa pun</span>
+        <span><b>Tune</b> lihat kurva PEQ, crossover, dynamics dan routing dalam konteks</span>
+        <span><b>Compare</b> nilai perubahan sebelum menulis ke slot perangkat</span>
+        <span><b>Preserve</b> simpan preset PC dan deploy ulang secara konsisten</span>
+      </div>
+    </div>
+
+    <figure class="software-console">
+      <div class="console-top"><span>SONKUPIK STUDIO</span><b>DEVICE ONLINE</b></div>
+      <div class="console-grid">
+        <aside><span>MIC A / B</span><span>MUSIC</span><span>REVERB</span><span>ECHO</span><span>MAIN</span><span>SURROUND</span><span>CENTER</span><span>SUB</span></aside>
+        <div class="console-main">
+          <div class="console-status"><b>LIVE PARAMETER LINK</b><span>Preset 03 · Karaoke Artist</span></div>
+          <div class="console-curve"><i></i><i></i><i></i><i></i><svg viewBox="0 0 500 130" preserveAspectRatio="none" aria-hidden="true"><path d="M0 83 C55 82 73 40 112 57 S177 100 220 72 S278 33 330 57 S408 94 500 48" fill="none" stroke="url(#console-gradient)" stroke-width="3"/><defs><linearGradient id="console-gradient"><stop stop-color="#69dfd1"/><stop offset=".55" stop-color="#81a8ff"/><stop offset="1" stop-color="#c49bff"/></linearGradient></defs></svg></div>
+          <div class="console-controls"><span>KEY<br><b>-2</b></span><span>PRE-DELAY<br><b>48 ms</b></span><span>DECAY<br><b>1.8 s</b></span><span>FBX<br><b>12</b></span></div>
+          <div class="console-actions"><button type="button">READ</button><button type="button">COMPARE</button><button type="button">SAVE PC</button><button class="active" type="button">WRITE SLOT</button></div>
+        </div>
+      </div>
+      <figcaption>Ilustrasi interface. Ketersediaan kontrol live dapat berbeda menurut revisi hardware, firmware dan metode koneksi.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading centered">
+      <span class="eyebrow">Tidak ada fitur penting yang disembunyikan</span>
+      <h2>Inventaris fungsi K500 dan SONKUPIK STUDIO.</h2>
+      <p class="section-lead">Detail teknis ditempatkan di sini agar halaman utama tetap mudah dipahami, tetapi calon pembeli dan teknisi tetap dapat melihat kedalaman sistem secara lengkap.</p>
+    </div>
+
+    <div class="feature-inventory">
+      <details open>
+        <summary><span>01</span>Music source, key control dan media</summary>
+        <div><p>Input 1, Input 2, Bluetooth, U-disk dan digital source selection; gain per sumber; master music volume; key transpose -7 sampai +7; parametric EQ 7-band; HPF/LPF crossover; mute; serta media transport rewind, forward dan play/pause pada workflow yang didukung.</p></div>
+      </details>
+      <details>
+        <summary><span>02</span>Microphone dan vocal processing</summary>
+        <div><p>Level Mic A dan Mic B; PEQ 10-band untuk masing-masing grup; EQ link; HPF/LPF; noise gate; compressor threshold, ratio, attack dan release; shared FBX depth; top mic volume; initial dan maximum mic volume.</p></div>
+      </details>
+      <details>
+        <summary><span>03</span>Reverb dan echo engine</summary>
+        <div><p>Reverb level, decay, pre-delay, HPF, LPF dan PEQ 5-band. Echo level, repeat, delay, HPF, LPF dan PEQ 5-band. Level reverb dan echo dapat didistribusikan secara berbeda ke setiap output.</p></div>
+      </details>
+      <details>
+        <summary><span>04</span>Output, crossover dan loudspeaker management</summary>
+        <div><p>Main L/R, Surround L/R, Center dan Subwoofer; output level; campuran mic, music, reverb dan echo per jalur; compressor; HPF/LPF dan tipe filter; PEQ 7-band untuk Main serta 5-band untuk Surround, Center dan Sub; delay alignment Surround kiri dan kanan.</p></div>
+      </details>
+      <details>
+        <summary><span>05</span>System, safety dan recording</summary>
+        <div><p>Top music, mic dan effect volume; initial dan maximum startup limits; use-initial-volume mode; effect initial level; recording level untuk U-disk dan USB pada workflow hardware yang mendukung; checksum preset; serta device state readback.</p></div>
+      </details>
+      <details>
+        <summary><span>06</span>Preset, device mode dan deployment</summary>
+        <div><p>Sepuluh equipment-mode slots; recall melalui USB dan/atau Bluetooth; preset PC; factory starting points; compare; permanent store ke slot perangkat; mass preset upload; serta library preset berdasarkan ruangan, penyanyi, genre atau acara.</p></div>
+      </details>
+      <details>
+        <summary><span>07</span>Koneksi dan distribusi software</summary>
+        <div><p>Live control melalui jalur USB HID dan Bluetooth yang kompatibel; Windows 10/11 64-bit; paket Setup dan Portable; resolver rilis resmi GitHub; file SHA-256 untuk verifikasi integritas download.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container">
+    <div class="section-heading centered">
+      <span class="eyebrow">Untuk siapa K500 dibuat?</span>
+      <h2>Dari karaoke keluarga premium sampai ruang entertainment profesional.</h2>
+    </div>
+    <div class="audience-grid">
+      <article><span>HOME KARAOKE</span><h3>Lebih mudah dinikmati semua anggota keluarga</h3><p>Sesuaikan nada lagu dan simpan setting yang nyaman tanpa membangun rack audio yang rumit.</p></article>
+      <article><span>KARAOKE ROOM</span><h3>Suara konsisten dari ruangan ke ruangan</h3><p>Gunakan preset, startup limits dan speaker management untuk hasil yang lebih repeatable.</p></article>
+      <article><span>PERFORMER / EVENT</span><h3>Workflow cepat untuk penyanyi dan acara</h3><p>Recall mode berdasarkan karakter vokal, genre atau kebutuhan panggung karaoke.</p></article>
+      <article><span>INSTALLER / TUNER</span><h3>Kontrol teknis yang dapat diaudit</h3><p>Baca nilai perangkat, atur setiap jalur, simpan backup dan deploy preset secara terstruktur.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="download" class="section">
+  <div class="container download-shell">
+    <div>
+      <span class="eyebrow">Software kontrol Windows resmi</span>
+      <h2>Buka seluruh kedalaman K500 dari layar yang modern.</h2>
+      <p class="section-lead">Gunakan Setup untuk pemakaian harian dan startup lebih cepat. Gunakan Portable ketika instalasi tidak memungkinkan.</p>
+      <div class="compat-table">
+        <div class="compat-row"><strong>Sistem operasi</strong><span>Windows 10/11, 64-bit</span></div>
+        <div class="compat-row"><strong>Target hardware</strong><span>Workflow prosesor karaoke KTV PRO K500 yang kompatibel</span></div>
+        <div class="compat-row"><strong>Koneksi</strong><span>USB HID atau Bluetooth yang didukung perangkat</span></div>
+        <div class="compat-row"><strong>Catatan</strong><span>Revisi hardware, firmware dan konfigurasi Windows dapat memengaruhi kompatibilitas</span></div>
+      </div>
+      <div class="verify-box">
+        <strong>Verifikasi sebelum membuka file</strong>
+        <p>Download checksum dari rilis yang sama, lalu cocokkan nama file secara tepat.</p>
+        <code>Get-FileHash .\SONKUPIK-STUDIO-*.exe -Algorithm SHA256</code>
+      </div>
+    </div>
+
+    <div class="release-panel">
+      <div class="release-panel-head"><span data-release-name>SONKUPIK STUDIO</span><strong data-release-version>v0.8.44</strong></div>
+      <div class="download-option">
+        <div><h3>Windows Setup <span class="tag">REKOMENDASI</span></h3><p>Startup harian lebih cepat, shortcut terpasang dan direktori aplikasi permanen. <span data-setup-size></span></p></div>
+        <a class="button primary" data-download="setup" href="https://github.com/masarray/sonkupik-studio/releases/latest">Download Setup</a>
+      </div>
+      <div class="download-option">
+        <div><h3>Windows Portable</h3><p>Tanpa instalasi; cold start dapat lebih lambat karena runtime diekstrak. <span data-portable-size></span></p></div>
+        <a class="button secondary" data-download="portable" href="https://github.com/masarray/sonkupik-studio/releases/latest">Download Portable</a>
+      </div>
+      <div class="download-option">
+        <div><h3>SHA-256 checksums</h3><p>Verifikasi identitas file rilis yang Anda download.</p></div>
+        <a class="button secondary" data-download="checksums" href="https://github.com/masarray/sonkupik-studio/releases/latest">Checksums</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="section alt">
+  <div class="container">
+    <div class="section-heading centered"><span class="eyebrow">Pertanyaan penting sebelum membeli</span><h2>Jawaban yang jujur dan tidak berlebihan.</h2></div>
+    <div class="faq">
+      <details><summary>Apakah K500 hanya digital mixer karaoke?</summary><p>Tidak. Mixer adalah salah satu bagian kecil dari fungsinya. K500 juga menjalankan key transpose, vocal effect, feedback management, dynamics, parametric EQ, crossover, delay alignment, multi-output routing dan preset management.</p></details>
+      <details><summary>Apakah efeknya sama persis dengan Alesis MicroVerb atau merek tertentu?</summary><p>Tidak ada klaim bahwa algoritmanya identik. Perbandingan tersebut menjelaskan kategori fungsi: K500 menyediakan reverb dan echo dengan parameter profesional yang biasanya ditemukan pada effect processor terpisah.</p></details>
+      <details><summary>Apakah K500 otomatis membuat suara seperti artis?</summary><p>Tidak ada alat yang dapat menggantikan teknik bernyanyi, mikrofon, speaker, akustik dan tuning. K500 memberi perangkat pemrosesan yang lengkap untuk membangun workflow karaoke bergaya profesional.</p></details>
+      <details><summary>Apakah key control sama dengan Auto-Tune?</summary><p>Tidak. Key control mentranspose musik pengiring agar lebih nyaman dinyanyikan. Auto-Tune memproses pitch vokal dan bukan fungsi yang diklaim di halaman ini.</p></details>
+      <details><summary>Bisakah output K500 langsung ke speaker aktif?</summary><p>Dapat digunakan dalam jalur line-level ke speaker aktif yang kompatibel atau ke power amplifier. Perhatikan jenis konektor, level sinyal dan gain structure. Speaker pasif tetap membutuhkan amplifier.</p></details>
+      <details><summary>Apakah SONKUPIK STUDIO bekerja dengan semua prosesor karaoke?</summary><p>Tidak. Software menargetkan workflow KTV PRO K500 yang kompatibel. Revisi hardware, firmware, metode koneksi dan konfigurasi Windows dapat memengaruhi hasil.</p></details>
+    </div>
+  </div>
+</section>
 </main>
-<footer class="site-footer"><div class="container"><div class="footer-grid"><div class="footer-copy"><a class="brand" href="./"><span class="brand-copy"><strong>SONKUPIK STUDIO</strong><small>KTV PRO K500 control and preset engineering.</small></span></a><p>Product capabilities can vary by hardware and firmware revision. Buy hardware through a trusted authorized seller and verify compatibility before purchase.</p></div><nav class="footer-links" aria-label="Footer"><a data-release-link href="https://github.com/masarray/sonkupik-studio/releases/latest">Latest release</a><a href="https://github.com/masarray/sonkupik-studio">GitHub</a><a href="https://github.com/masarray/sonkupik-studio/blob/main/SUPPORT.md">Support</a><a href="https://github.com/masarray/sonkupik-studio/blob/main/SECURITY.md">Security</a><a href="id/" lang="id">Bahasa Indonesia</a></nav></div><div class="footer-bottom"><span>© 2026 Tutorial Mas Ari / MasArray</span><span>Windows 10/11 x64 · Compatible KTV PRO K500 workflows</span></div></div></footer>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-copy">
+        <a class="brand" href="./"><span class="brand-copy"><strong>SONKUPIK STUDIO</strong><small>Control room KTV PRO K500 untuk Windows.</small></span></a>
+        <p>K500 adalah prosesor audio; bukan power amplifier dan bukan pengganti teknik tuning yang benar. Download software hanya dari website atau GitHub Releases resmi.</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#mengapa">Tentang K500</a>
+        <a href="#fitur">Fitur lengkap</a>
+        <a data-release-link href="https://github.com/masarray/sonkupik-studio/releases/latest">Rilis terbaru</a>
+        <a href="https://github.com/masarray/sonkupik-studio/blob/main/SUPPORT.md">Support</a>
+        <a href="https://github.com/masarray/sonkupik-studio/blob/main/SECURITY.md">Security</a>
+        <a href="en/" lang="en">English</a>
+      </nav>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Tutorial Mas Ari / MasArray</span><span>KTV PRO K500 · Windows 10/11 x64</span></div>
+  </div>
+</footer>
 </body>
 </html>
