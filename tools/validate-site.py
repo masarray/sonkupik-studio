@@ -13,6 +13,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 REPOSITORY = "masarray/sonkupik-studio"
 SITE_URL = "https://masarray.github.io/sonkupik-studio/"
+EN_URL = SITE_URL + "en/"
 RELEASE_PREFIX = f"https://github.com/{REPOSITORY}/releases/"
 
 
@@ -25,9 +26,13 @@ class PageParser(HTMLParser):
         self.meta: dict[tuple[str, str], str] = {}
         self.links: list[dict[str, str]] = []
         self.scripts: list[dict[str, str]] = []
+        self.ids: set[str] = set()
+        self.fragment_hrefs: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = {key: value or "" for key, value in attrs}
+        if values.get("id"):
+            self.ids.add(values["id"])
         if tag == "html":
             self.html_lang = values.get("lang", "")
         elif tag == "title":
@@ -41,6 +46,8 @@ class PageParser(HTMLParser):
             self.links.append(values)
         elif tag == "script":
             self.scripts.append(values)
+        elif tag == "a" and values.get("href", "").startswith("#"):
+            self.fragment_hrefs.append(values["href"][1:])
 
     def handle_endtag(self, tag: str) -> None:
         if tag == "title":
@@ -83,8 +90,8 @@ def validate_page(path: pathlib.Path, expected_lang: str, canonical: str, errors
         if link.get("rel") == "alternate" and link.get("hreflang")
     }
     expected_alternates = {
-        "en": SITE_URL,
-        "id": SITE_URL + "id/",
+        "id": SITE_URL,
+        "en": EN_URL,
         "x-default": SITE_URL,
     }
     if alternates != expected_alternates:
@@ -97,11 +104,25 @@ def validate_page(path: pathlib.Path, expected_lang: str, canonical: str, errors
     if not any(script.get("id") == "software-structured-data" for script in parser.scripts):
         fail(f"{path}: missing SoftwareApplication structured data", errors)
 
+    missing_fragments = sorted(fragment for fragment in parser.fragment_hrefs if fragment and fragment not in parser.ids)
+    if missing_fragments:
+        fail(f"{path}: links point to missing fragments {missing_fragments}", errors)
+
     if "api.github.com/repos/masarray/sonkupik-studio/releases/latest" in content:
         fail(f"{path}: release API logic must stay in shared app.js", errors)
 
     if len(content.encode("utf-8")) > 90_000:
         fail(f"{path}: HTML exceeds lightweight 90 KB limit", errors)
+
+
+def validate_redirect(path: pathlib.Path, errors: list[str]) -> None:
+    content = path.read_text(encoding="utf-8")
+    if 'content="0;url=../"' not in content or 'location.replace("../")' not in content:
+        fail(f"{path}: legacy route must redirect to the Indonesian root", errors)
+    if 'content="noindex,follow"' not in content:
+        fail(f"{path}: legacy route must be noindex,follow", errors)
+    if f'href="{SITE_URL}"' not in content:
+        fail(f"{path}: legacy route canonical must point to the root", errors)
 
 
 def validate_release(path: pathlib.Path, errors: list[str]) -> None:
@@ -133,11 +154,12 @@ def main() -> int:
     errors: list[str] = []
     required = [
         SITE / "index.html",
+        SITE / "en" / "index.html",
         SITE / "id" / "index.html",
         SITE / "styles.css",
+        SITE / "product-features.css",
         SITE / "app.js",
         SITE / "release.json",
-        SITE / "id" / "release.json",
         SITE / "robots.txt",
         SITE / "sitemap.xml",
         SITE / "site.webmanifest",
@@ -153,28 +175,45 @@ def main() -> int:
             print(f"ERROR: {error}", file=sys.stderr)
         return 1
 
-    validate_page(SITE / "index.html", "en", SITE_URL, errors)
-    validate_page(SITE / "id" / "index.html", "id", SITE_URL + "id/", errors)
+    validate_page(SITE / "index.html", "id", SITE_URL, errors)
+    validate_page(SITE / "en" / "index.html", "en", EN_URL, errors)
+    validate_redirect(SITE / "id" / "index.html", errors)
     validate_release(SITE / "release.json", errors)
-    validate_release(SITE / "id" / "release.json", errors)
 
     app = (SITE / "app.js").read_text(encoding="utf-8")
     for required_fragment in (
         'RELEASE_REPOSITORY = "masarray/sonkupik-studio"',
+        'dataset.siteRoot',
         "isAllowedReleaseUrl",
         "SHA256SUMS",
         "Setup\\.exe",
         "Portable\\.exe",
+        'data-download="setup"',
+        'data-download="portable"',
     ):
         if required_fragment not in app:
             fail(f"site/app.js: missing release hardening fragment {required_fragment!r}", errors)
 
-    css_size = (SITE / "styles.css").stat().st_size
-    js_size = (SITE / "app.js").stat().st_size
-    if css_size > 45_000:
-        fail(f"site/styles.css exceeds 45 KB lightweight budget ({css_size} bytes)", errors)
-    if js_size > 18_000:
-        fail(f"site/app.js exceeds 18 KB lightweight budget ({js_size} bytes)", errors)
+    sitemap = (SITE / "sitemap.xml").read_text(encoding="utf-8")
+    for required_url in (SITE_URL, EN_URL):
+        if f"<loc>{required_url}</loc>" not in sitemap:
+            fail(f"site/sitemap.xml: missing {required_url}", errors)
+    if SITE_URL + "id/" in sitemap:
+        fail("site/sitemap.xml: legacy /id/ redirect must not be indexed", errors)
+
+    manifest = json.loads((SITE / "site.webmanifest").read_text(encoding="utf-8"))
+    if manifest.get("lang") != "id":
+        fail("site/site.webmanifest: primary language must be id", errors)
+
+    budgets = {
+        SITE / "styles.css": 45_000,
+        SITE / "product-features.css": 35_000,
+        SITE / "app.js": 18_000,
+    }
+    for path, limit in budgets.items():
+        size = path.stat().st_size
+        if size > limit:
+            fail(f"{path.relative_to(ROOT)} exceeds {limit // 1000} KB lightweight budget ({size} bytes)", errors)
 
     source_like = [
         path.relative_to(ROOT)
