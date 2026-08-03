@@ -1,7 +1,8 @@
 {
   "name": "SONKUPIK STUDIO",
   "short_name": "SONKUPIK",
-  "description": "Professional K500 karaoke processor control and preset engineering software for Windows.",
+  "lang": "id",
+  "description": "Control room Windows untuk prosesor karaoke KTV PRO K500: key transpose, vocal effect, parametric EQ, crossover, loudspeaker management dan preset.",
   "start_url": "/sonkupik-studio/",
   "scope": "/sonkupik-studio/",
   "display": "standalone",
