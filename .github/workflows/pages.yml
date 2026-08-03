@@ -89,11 +89,6 @@ jobs:
               print(f"Resolved {snapshot['tag_name']} with {len(allowed_assets)} supported assets")
           except Exception as error:
               print(f"Latest release API unavailable; keeping committed fallback: {error}")
-
-          pathlib.Path("site/id/release.json").write_text(
-              fallback_path.read_text(encoding="utf-8"),
-              encoding="utf-8",
-          )
           PY
 
       - name: Validate public site
