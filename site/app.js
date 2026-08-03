@@ -1,7 +1,8 @@
 const RELEASE_REPOSITORY = "masarray/sonkupik-studio";
 const RELEASE_API = `https://api.github.com/repos/${RELEASE_REPOSITORY}/releases/latest`;
 const RELEASE_PAGE = `https://github.com/${RELEASE_REPOSITORY}/releases/latest`;
-const SNAPSHOT_URL = new URL("release.json", document.baseURI).href;
+const siteRoot = document.documentElement.dataset.siteRoot || "./";
+const SNAPSHOT_URL = new URL(`${siteRoot}release.json`, document.baseURI).href;
 
 const language = document.documentElement.lang === "id" ? "id" : "en";
 const copy = {
@@ -187,13 +188,13 @@ async function resolveRelease() {
     const live = normalizedRelease(await fetchJson(RELEASE_API, true));
     if (applyRelease(live, "live")) return;
   } catch {
-    // Continue to reviewed snapshot.
+    // Continue to the reviewed site-root snapshot.
   }
   try {
     const snapshot = normalizedRelease(await fetchJson(SNAPSHOT_URL));
     if (applyRelease(snapshot, "snapshot")) return;
   } catch {
-    // Continue to permanent release-page fallback.
+    // Continue to the permanent release-page fallback.
   }
   setText("[data-release-status]", copy[language].unavailable);
   document.querySelectorAll("[data-release-link], [data-download]").forEach((link) => {
