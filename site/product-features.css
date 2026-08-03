@@ -336,6 +336,10 @@
   font-size: .67rem;
 }
 
+.workflow {
+  grid-template-columns: repeat(4,1fr);
+}
+
 .operations-grid {
   display: grid;
   grid-template-columns: repeat(4,1fr);
@@ -365,6 +369,10 @@
 }
 
 @media (max-width: 1040px) {
+  .workflow {
+    grid-template-columns: repeat(2,1fr);
+  }
+
   .product-intro-grid,
   .beyond-mixer {
     grid-template-columns: 1fr;
@@ -390,6 +398,10 @@
 }
 
 @media (max-width: 760px) {
+  .workflow {
+    grid-template-columns: 1fr;
+  }
+
   .consumer-feature-grid,
   .technical-foundation {
     grid-template-columns: 1fr;
