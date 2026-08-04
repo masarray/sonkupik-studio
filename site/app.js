@@ -8,7 +8,7 @@
     RELEASE_REPOSITORY,
     RELEASE_API: `https://api.github.com/repos/${RELEASE_REPOSITORY}/releases/latest`,
     RELEASE_PAGE,
-    STORE_URL: "https://www.tokopedia.com/dr-sonkupik",
+    STORE_URL: "https://www.tokopedia.com/dr-sonkupik/recording-tech-ktv-pro-k500-karaoke-effect-processor-4-input-6-output-digital-mixer-dengan-equalizer-compressor-anti-feedback-crossover-ktv-pro-k500",
     siteRoot,
     SNAPSHOT_URL: new URL(`${siteRoot}release.json`, document.baseURI).href,
     language,
@@ -39,7 +39,7 @@
   const scripts = [`landing-${language}.js`, "landing-ui.js", "landing-release.js"];
   const load = (name) => new Promise((resolve, reject) => {
     const script = document.createElement("script");
-    script.src = new URL(`${siteRoot}${name}?v=20260804`, document.baseURI).href;
+    script.src = new URL(`${siteRoot}${name}?v=20260804-product`, document.baseURI).href;
     script.onload = resolve;
     script.onerror = reject;
     document.head.append(script);
