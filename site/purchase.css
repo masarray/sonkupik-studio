@@ -1,0 +1,324 @@
+/* Purchase path and beginner-friendly connection guide for KTV PRO K500. */
+
+.owner-software-link {
+  display: inline-flex;
+  margin-top: 12px;
+  color: #9fb4c1;
+  font-size: .68rem;
+  line-height: 1.45;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(159,180,193,.32);
+}
+
+.owner-software-link:hover,
+.owner-software-link:focus-visible {
+  color: #dff4f1;
+  border-color: rgba(104,224,209,.6);
+}
+
+[data-store-link] {
+  position: relative;
+}
+
+[data-store-link]::after {
+  content: "↗";
+  margin-left: .42em;
+  font-size: .88em;
+  opacity: .72;
+}
+
+.buyer-guide {
+  overflow: hidden;
+}
+
+.purchase-grid {
+  display: grid;
+  grid-template-columns: minmax(300px,.72fr) minmax(0,1.28fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.store-card,
+.connection-card,
+.needs-panel,
+.relationship-note {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, rgba(16,28,40,.99), rgba(7,13,20,.99));
+  box-shadow: var(--shadow);
+}
+
+.store-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 340px;
+  padding: clamp(28px,4.5vw,52px);
+  background:
+    radial-gradient(circle at 10% 8%, rgba(104,224,209,.16), transparent 18rem),
+    radial-gradient(circle at 95% 100%, rgba(128,167,255,.12), transparent 17rem),
+    linear-gradient(145deg, rgba(16,31,42,.99), rgba(7,13,20,.99));
+}
+
+.store-card > span {
+  color: var(--conversion-gold, #f3c36b);
+  font-size: .6rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.store-card h3 {
+  margin: 20px 0 10px;
+  font-size: clamp(1.45rem,3vw,2.5rem);
+  line-height: 1.06;
+  letter-spacing: -.04em;
+}
+
+.store-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.7;
+}
+
+.store-button {
+  align-self: flex-start;
+  margin-top: 28px;
+}
+
+.store-card small {
+  margin-top: 13px;
+  color: #718694;
+  font-size: .56rem;
+}
+
+.connection-card {
+  min-height: 340px;
+  display: grid;
+  align-content: center;
+  padding: clamp(24px,4vw,46px);
+  background:
+    radial-gradient(circle at 50% 48%, rgba(104,224,209,.075), transparent 18rem),
+    linear-gradient(145deg, rgba(14,25,37,.99), rgba(5,10,16,.99));
+}
+
+.connection-flow {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto minmax(170px,.9fr) auto minmax(0,1.15fr);
+  gap: 13px;
+  align-items: center;
+}
+
+.connection-flow > i {
+  color: var(--cyan);
+  font-size: 1.25rem;
+  font-style: normal;
+  opacity: .65;
+}
+
+.signal-source,
+.signal-core,
+.signal-output {
+  min-height: 122px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 9px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(5,12,18,.76);
+}
+
+.signal-source b,
+.signal-output b {
+  color: #d9e8ee;
+  font-size: .68rem;
+  line-height: 1.45;
+  letter-spacing: .035em;
+}
+
+.signal-source span {
+  padding: 5px 8px;
+  border: 1px solid rgba(104,224,209,.22);
+  border-radius: 999px;
+  color: #a8dcd6;
+  font-size: .54rem;
+}
+
+.signal-core {
+  border-color: rgba(104,224,209,.4);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(104,224,209,.13), transparent 70%),
+    rgba(7,19,25,.95);
+  box-shadow: 0 18px 42px rgba(0,0,0,.25);
+}
+
+.signal-core small {
+  color: var(--cyan);
+  font-size: .48rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.signal-core strong {
+  font-size: .96rem;
+  letter-spacing: .025em;
+}
+
+.connection-card > p {
+  max-width: 700px;
+  margin: 24px auto 0;
+  color: #7f939f;
+  text-align: center;
+  font-size: .64rem;
+  line-height: 1.6;
+}
+
+.needs-panel {
+  display: grid;
+  grid-template-columns: minmax(240px,.62fr) minmax(0,1.38fr);
+  gap: clamp(28px,5vw,60px);
+  align-items: start;
+  margin-top: 18px;
+  padding: clamp(28px,4.5vw,52px);
+}
+
+.needs-panel > div:first-child h3 {
+  margin: 15px 0 0;
+  max-width: 380px;
+  font-size: clamp(1.25rem,2.5vw,2rem);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+}
+
+.needs-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--line);
+}
+
+.needs-grid article {
+  min-height: 116px;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 13px;
+  padding: 18px;
+  background: rgba(6,13,20,.98);
+}
+
+.needs-grid article > span {
+  color: var(--conversion-gold, #f3c36b);
+  font-size: .55rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.needs-grid strong {
+  display: block;
+  color: #dcebf0;
+  font-size: .72rem;
+  font-weight: 650;
+}
+
+.needs-grid p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: .62rem;
+  line-height: 1.55;
+}
+
+.relationship-note {
+  display: grid;
+  grid-template-columns: minmax(180px,.36fr) minmax(0,1fr);
+  gap: 24px;
+  margin-top: 18px;
+  padding: 22px 24px;
+  border-left: 3px solid rgba(104,224,209,.58);
+  box-shadow: none;
+}
+
+.relationship-note strong {
+  color: #dff2f0;
+  font-size: .72rem;
+}
+
+.relationship-note p {
+  margin: 0;
+  color: #8398a5;
+  font-size: .67rem;
+  line-height: 1.65;
+}
+
+.purchase-mobile-cta span {
+  display: grid;
+  gap: 2px;
+}
+
+.purchase-mobile-cta span > a {
+  color: #93a8b5;
+  font-size: .52rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.purchase-mobile-cta span > a:hover,
+.purchase-mobile-cta span > a:focus-visible {
+  color: #dff4f1;
+}
+
+@media (max-width: 980px) {
+  .purchase-grid,
+  .needs-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .store-card {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .connection-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .connection-flow > i {
+    transform: rotate(90deg);
+    justify-self: center;
+  }
+
+  .signal-source,
+  .signal-core,
+  .signal-output {
+    min-height: 98px;
+  }
+
+  .needs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .relationship-note {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 520px) {
+  .store-button {
+    width: 100%;
+  }
+
+  .purchase-mobile-cta {
+    grid-template-columns: minmax(0,1fr) auto;
+  }
+
+  .purchase-mobile-cta .button {
+    white-space: nowrap;
+  }
+}
