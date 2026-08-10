@@ -1,0 +1,206 @@
+name: Build and publish SONKUPIK STUDIO Windows release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/release-source.json'
+
+permissions:
+  contents: write
+
+jobs:
+  windows-release:
+    runs-on: windows-latest
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+    steps:
+      - name: Checkout distribution repository
+        uses: actions/checkout@v4
+
+      - name: Resolve pinned source release
+        id: release
+        shell: powershell
+        run: |
+          $config = Get-Content '.github/release-source.json' -Raw | ConvertFrom-Json
+          $version = [string]$config.version
+          $repository = [string]$config.source_repository
+          $sourceRef = [string]$config.source_ref
+
+          if ($version -notmatch '^v\d+\.\d+\.\d+$') {
+            throw "Invalid release version '$version'. Expected vMAJOR.MINOR.PATCH."
+          }
+          if ($repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$') {
+            throw "Invalid source repository '$repository'."
+          }
+          if ($sourceRef -notmatch '^[0-9a-fA-F]{40}$') {
+            throw "Source ref must be a pinned 40-character commit SHA."
+          }
+
+          "RELEASE_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "repository=$repository" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "source_ref=$sourceRef" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          Write-Host "Public release $version will build $repository@$sourceRef"
+
+      - name: Checkout pinned application source
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.release.outputs.repository }}
+          ref: ${{ steps.release.outputs.source_ref }}
+          path: source
+          persist-credentials: false
+
+      - name: Verify source version and release notes
+        shell: powershell
+        run: |
+          $package = Get-Content 'source\package.json' -Raw | ConvertFrom-Json
+          $committedVersion = "v$($package.version)"
+          if ($committedVersion -ne $env:RELEASE_VERSION) {
+            throw "Pinned source version $committedVersion does not match requested release $env:RELEASE_VERSION."
+          }
+          $notesPath = "source\RELEASE_NOTES_V$($package.version).md"
+          if (!(Test-Path $notesPath)) {
+            throw "Missing release notes: $notesPath"
+          }
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Validate built-in presets
+        working-directory: source
+        run: npm run test:builtin-presets
+
+      - name: Validate background factory preset catalog
+        working-directory: source
+        run: npm run test:preset-catalog
+
+      - name: Ensure committed preset catalog is current
+        working-directory: source
+        run: npm run presets:catalog:check
+
+      - name: Validate responsive System layout
+        working-directory: source
+        run: npm run test:system-layout
+
+      - name: Validate unified UX controls
+        working-directory: source
+        run: npm run test:ux-controls
+
+      - name: Validate v0.8.42 hardware hardening
+        working-directory: source
+        run: npm run test:v0842-hardening
+
+      - name: Validate v0.8.43 performance hardening
+        working-directory: source
+        run: npm run test:v0843-performance
+
+      - name: Build production application
+        working-directory: source
+        run: npm run build
+
+      - name: Validate embedded desktop server
+        working-directory: source
+        run: npm run test:desktop-server
+
+      - name: Normalize and validate Electron package metadata
+        working-directory: source
+        run: npm run test:electron-metadata && npm run desktop:prepare && npm run test:windows-packaging
+
+      - name: Build portable EXE and installer
+        working-directory: source
+        run: npx electron-builder --win portable nsis --x64 --publish never
+
+      - name: Verify packaged application and generate SHA-256 manifest
+        shell: powershell
+        run: |
+          $version = $env:RELEASE_VERSION.TrimStart('v')
+          $portable = Get-Item "source\release\SONKUPIK-STUDIO-$version-Portable.exe" -ErrorAction Stop
+          $installer = Get-Item "source\release\SONKUPIK-STUDIO-$version-Setup.exe" -ErrorAction Stop
+
+          $nativeRoot = 'source\release\win-unpacked\resources\app.asar.unpacked\node_modules'
+          if (!(Get-ChildItem "$nativeRoot\node-hid" -Recurse -Filter '*.node' -ErrorAction SilentlyContinue)) {
+            throw 'Packaged node-hid native binary missing.'
+          }
+          if (!(Get-ChildItem "$nativeRoot\@serialport" -Recurse -Filter '*.node' -ErrorAction SilentlyContinue)) {
+            throw 'Packaged serialport native binary missing.'
+          }
+
+          $factoryPreset = 'source\release\win-unpacked\resources\presets\KARAOKE_ARTIST_LUXURY.k500'
+          if (!(Test-Path $factoryPreset)) { throw 'Packaged KARAOKE ARTIST LUXURY preset missing.' }
+          $presetBytes = [IO.File]::ReadAllBytes($factoryPreset)
+          if ($presetBytes.Length -ne 1144) { throw 'Packaged factory preset has invalid size.' }
+          $presetChecksum = 0
+          foreach ($byte in $presetBytes) { $presetChecksum = ($presetChecksum + $byte) -band 0xff }
+          if ($presetChecksum -ne 0) { throw 'Packaged factory preset checksum invalid.' }
+
+          $manifest = 'source\release\SHA256SUMS.txt'
+          Remove-Item $manifest -ErrorAction SilentlyContinue
+          @($installer, $portable) | ForEach-Object {
+            $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            "$hash  $($_.Name)" | Add-Content $manifest
+          }
+
+          Get-Item $installer.FullName, $portable.FullName, $manifest | Format-Table Name, Length
+
+      - name: Prepare public release notes
+        shell: powershell
+        run: |
+          $package = Get-Content 'source\package.json' -Raw | ConvertFrom-Json
+          $notesPath = "source\RELEASE_NOTES_V$($package.version).md"
+          $notes = Get-Content $notesPath -Raw
+          $sourceUrl = "https://github.com/${{ steps.release.outputs.repository }}/commit/${{ steps.release.outputs.source_ref }}"
+          $workflowUrl = "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          @"
+          $notes
+
+          ## Distribution provenance
+
+          - Source repository: `${{ steps.release.outputs.repository }}`
+          - Pinned source commit: $sourceUrl
+          - Windows build workflow: $workflowUrl
+          - Packages: Setup (recommended) and Portable
+          - Integrity manifest: `SHA256SUMS.txt`
+
+          Windows binaries are currently unsigned; Windows SmartScreen may show a publisher warning on first launch.
+          "@ | Set-Content 'release-body.md' -Encoding utf8
+
+      - name: Upload portable workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SONKUPIK-STUDIO-${{ env.RELEASE_VERSION }}-Portable
+          if-no-files-found: error
+          path: source/release/SONKUPIK-STUDIO-*-Portable.exe
+
+      - name: Upload installer workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SONKUPIK-STUDIO-${{ env.RELEASE_VERSION }}-Setup
+          if-no-files-found: error
+          path: source/release/SONKUPIK-STUDIO-*-Setup.exe
+
+      - name: Publish official GitHub release
+        uses: softprops/action-gh-release@v3
+        with:
+          token: ${{ github.token }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          target_commitish: main
+          name: SONKUPIK STUDIO ${{ env.RELEASE_VERSION }}
+          body_path: release-body.md
+          fail_on_unmatched_files: true
+          preserve_order: true
+          files: |
+            source/release/SONKUPIK-STUDIO-*-Setup.exe
+            source/release/SONKUPIK-STUDIO-*-Portable.exe
+            source/release/SHA256SUMS.txt
