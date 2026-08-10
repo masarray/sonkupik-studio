@@ -1,4 +1,4 @@
-name: Deploy product website
+name: Deploy software download website
 
 on:
   push:
@@ -37,12 +37,20 @@ jobs:
           python - <<'PY'
           import json
           import pathlib
+          import re
           import urllib.request
 
           repository = "masarray/sonkupik-studio"
           api_url = f"https://api.github.com/repos/{repository}/releases/latest"
           release_prefix = f"https://github.com/{repository}/releases/"
           fallback_path = pathlib.Path("site/release.json")
+          allowed_names = (
+              re.compile(r"^SONKUPIK-STUDIO-.+-Setup\.exe$", re.I),
+              re.compile(r"^SONKUPIK-STUDIO-.+-Portable\.exe$", re.I),
+              re.compile(r"^SONKUPIK-STUDIO-.+\.(dmg|pkg)$", re.I),
+              re.compile(r"^SONKUPIK-STUDIO-.+\.(AppImage|deb|rpm)$", re.I),
+              re.compile(r"^SHA256SUMS\.txt$", re.I),
+          )
 
           try:
               request = urllib.request.Request(
@@ -66,11 +74,7 @@ jobs:
                   url = str(asset.get("browser_download_url", ""))
                   if not url.startswith(release_prefix):
                       continue
-                  if not (
-                      (name.startswith("SONKUPIK-STUDIO-") and name.endswith("-Setup.exe"))
-                      or (name.startswith("SONKUPIK-STUDIO-") and name.endswith("-Portable.exe"))
-                      or name == "SHA256SUMS.txt"
-                  ):
+                  if not any(pattern.fullmatch(name) for pattern in allowed_names):
                       continue
                   allowed_assets.append({
                       "name": name,
@@ -91,7 +95,7 @@ jobs:
               print(f"Latest release API unavailable; keeping committed fallback: {error}")
           PY
 
-      - name: Validate public site
+      - name: Validate software download site
         run: python tools/validate-site.py
 
       - name: Configure GitHub Pages

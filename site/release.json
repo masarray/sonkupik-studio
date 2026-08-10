@@ -1,7 +1,23 @@
 {
   "tag_name": "v0.8.44",
   "name": "SONKUPIK STUDIO v0.8.44",
-  "release_url": "https://github.com/masarray/sonkupik-studio/releases/latest",
-  "published_at": "2026-07-31T00:00:00Z",
-  "assets": []
+  "html_url": "https://github.com/masarray/sonkupik-studio/releases/tag/v0.8.44",
+  "published_at": "2026-08-10T12:28:25Z",
+  "assets": [
+    {
+      "name": "SONKUPIK-STUDIO-0.8.44-Setup.exe",
+      "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Setup.exe",
+      "size": 104997105
+    },
+    {
+      "name": "SONKUPIK-STUDIO-0.8.44-Portable.exe",
+      "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Portable.exe",
+      "size": 104738418
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SHA256SUMS.txt",
+      "size": 203
+    }
+  ]
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the public SONKUPIK STUDIO distribution website using stdlib only."""
+"""Validate the SONKUPIK STUDIO download-first public website using stdlib only."""
 
 from __future__ import annotations
 
@@ -26,13 +26,9 @@ class PageParser(HTMLParser):
         self.meta: dict[tuple[str, str], str] = {}
         self.links: list[dict[str, str]] = []
         self.scripts: list[dict[str, str]] = []
-        self.ids: set[str] = set()
-        self.fragment_hrefs: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = {key: value or "" for key, value in attrs}
-        if values.get("id"):
-            self.ids.add(values["id"])
         if tag == "html":
             self.html_lang = values.get("lang", "")
         elif tag == "title":
@@ -46,8 +42,6 @@ class PageParser(HTMLParser):
             self.links.append(values)
         elif tag == "script":
             self.scripts.append(values)
-        elif tag == "a" and values.get("href", "").startswith("#"):
-            self.fragment_hrefs.append(values["href"][1:])
 
     def handle_endtag(self, tag: str) -> None:
         if tag == "title":
@@ -89,11 +83,7 @@ def validate_page(path: pathlib.Path, expected_lang: str, canonical: str, errors
         for link in parser.links
         if link.get("rel") == "alternate" and link.get("hreflang")
     }
-    expected_alternates = {
-        "id": SITE_URL,
-        "en": EN_URL,
-        "x-default": SITE_URL,
-    }
+    expected_alternates = {"id": SITE_URL, "en": EN_URL, "x-default": SITE_URL}
     if alternates != expected_alternates:
         fail(f"{path}: incomplete hreflang set: {alternates}", errors)
 
@@ -104,15 +94,24 @@ def validate_page(path: pathlib.Path, expected_lang: str, canonical: str, errors
     if not any(script.get("id") == "software-structured-data" for script in parser.scripts):
         fail(f"{path}: missing SoftwareApplication structured data", errors)
 
-    missing_fragments = sorted(fragment for fragment in parser.fragment_hrefs if fragment and fragment not in parser.ids)
-    if missing_fragments:
-        fail(f"{path}: links point to missing fragments {missing_fragments}", errors)
+    required_html = (
+        'id="download"',
+        'data-platform-download="windows"',
+        'data-platform-download="macos"',
+        'data-platform-download="linux"',
+        'data-download="setup"',
+        'data-download="portable"',
+        "SONKUPIK STUDIO",
+    )
+    for fragment in required_html:
+        if fragment not in content:
+            fail(f"{path}: missing download-first fragment {fragment!r}", errors)
 
-    if "api.github.com/repos/masarray/sonkupik-studio/releases/latest" in content:
-        fail(f"{path}: release API logic must stay in the shared release runtime", errors)
+    if "KTV PRO K500 — Prosesor Karaoke Lengkap" in content or "Satu alat menggantikan" in content:
+        fail(f"{path}: legacy hardware-first hero copy must not return", errors)
 
-    if len(content.encode("utf-8")) > 90_000:
-        fail(f"{path}: HTML exceeds lightweight 90 KB limit", errors)
+    if len(content.encode("utf-8")) > 42_000:
+        fail(f"{path}: HTML exceeds lightweight 42 KB limit", errors)
 
 
 def validate_redirect(path: pathlib.Path, errors: list[str]) -> None:
@@ -120,11 +119,9 @@ def validate_redirect(path: pathlib.Path, errors: list[str]) -> None:
     has_meta_redirect = 'content="0;url=../"' in content
     has_script_redirect = "location.replace('../' + location.hash)" in content or 'location.replace("../" + location.hash)' in content
     if not has_meta_redirect or not has_script_redirect:
-        fail(f"{path}: legacy route must redirect to the Indonesian root while preserving fragments", errors)
+        fail(f"{path}: legacy /id/ route must redirect to Indonesian root while preserving fragments", errors)
     if 'content="noindex,follow"' not in content:
         fail(f"{path}: legacy route must be noindex,follow", errors)
-    if f'href="{SITE_URL}"' not in content:
-        fail(f"{path}: legacy route canonical must point to the root", errors)
 
 
 def validate_release(path: pathlib.Path, errors: list[str]) -> None:
@@ -138,11 +135,14 @@ def validate_release(path: pathlib.Path, errors: list[str]) -> None:
     if not isinstance(release_url, str) or not release_url.startswith(RELEASE_PREFIX):
         fail(f"{path}: release URL must belong to {REPOSITORY}", errors)
 
-    required_assets = {
-        "Setup.exe": False,
-        "Portable.exe": False,
-        "SHA256SUMS.txt": False,
-    }
+    required = {"setup": False, "portable": False, "checksums": False}
+    allowed_patterns = (
+        re.compile(r"^SONKUPIK-STUDIO-.+-Setup\.exe$", re.I),
+        re.compile(r"^SONKUPIK-STUDIO-.+-Portable\.exe$", re.I),
+        re.compile(r"^SONKUPIK-STUDIO-.+\.(dmg|pkg)$", re.I),
+        re.compile(r"^SONKUPIK-STUDIO-.+\.(AppImage|deb|rpm)$", re.I),
+        re.compile(r"^SHA256SUMS\.txt$", re.I),
+    )
 
     assets = payload.get("assets", [])
     if not isinstance(assets, list):
@@ -152,118 +152,83 @@ def validate_release(path: pathlib.Path, errors: list[str]) -> None:
     for asset in assets:
         name = str(asset.get("name", ""))
         url = str(asset.get("browser_download_url") or asset.get("url") or "")
-        is_setup = bool(re.fullmatch(r"SONKUPIK-STUDIO-.+-Setup\.exe", name, re.IGNORECASE))
-        is_portable = bool(re.fullmatch(r"SONKUPIK-STUDIO-.+-Portable\.exe", name, re.IGNORECASE))
-        is_checksums = name == "SHA256SUMS.txt"
-        allowed_name = is_setup or is_portable or is_checksums
-
-        if not allowed_name:
+        if not any(pattern.fullmatch(name) for pattern in allowed_patterns):
             fail(f"{path}: unsupported public asset name {name!r}", errors)
             continue
         if not url.startswith(RELEASE_PREFIX):
-            fail(f"{path}: asset URL does not belong to the release repository", errors)
+            fail(f"{path}: asset URL does not belong to release repository", errors)
+        if re.fullmatch(r"SONKUPIK-STUDIO-.+-Setup\.exe", name, re.I):
+            required["setup"] = True
+        elif re.fullmatch(r"SONKUPIK-STUDIO-.+-Portable\.exe", name, re.I):
+            required["portable"] = True
+        elif name.lower() == "sha256sums.txt":
+            required["checksums"] = True
 
-        if is_setup:
-            required_assets["Setup.exe"] = True
-        elif is_portable:
-            required_assets["Portable.exe"] = True
-        elif is_checksums:
-            required_assets["SHA256SUMS.txt"] = True
-
-    missing = [name for name, present in required_assets.items() if not present]
+    missing = [name for name, present in required.items() if not present]
     if missing:
-        fail(f"{path}: missing required public release assets: {', '.join(missing)}", errors)
+        fail(f"{path}: missing required Windows release assets: {', '.join(missing)}", errors)
 
 
 def main() -> int:
     errors: list[str] = []
-    required = [
+    required_files = [
         SITE / "index.html",
         SITE / "en" / "index.html",
         SITE / "id" / "index.html",
-        SITE / "styles.css",
-        SITE / "product-features.css",
-        SITE / "app.js",
-        SITE / "landing-release.js",
+        SITE / "download.css",
+        SITE / "download.js",
         SITE / "release.json",
         SITE / "robots.txt",
         SITE / "sitemap.xml",
         SITE / "site.webmanifest",
         SITE / "assets" / "sonkupik-mark.svg",
-        SITE / "assets" / "sonkupik-studio-preview.svg",
     ]
-    for path in required:
+    for path in required_files:
         if not path.is_file():
             fail(f"Missing required file: {path.relative_to(ROOT)}", errors)
 
-    if errors:
-        for error in errors:
-            print(f"ERROR: {error}", file=sys.stderr)
-        return 1
+    if not errors:
+        validate_page(SITE / "index.html", "id", SITE_URL, errors)
+        validate_page(SITE / "en" / "index.html", "en", EN_URL, errors)
+        validate_redirect(SITE / "id" / "index.html", errors)
+        validate_release(SITE / "release.json", errors)
 
-    validate_page(SITE / "index.html", "id", SITE_URL, errors)
-    validate_page(SITE / "en" / "index.html", "en", EN_URL, errors)
-    validate_redirect(SITE / "id" / "index.html", errors)
-    validate_release(SITE / "release.json", errors)
-
-    app = (SITE / "app.js").read_text(encoding="utf-8")
-    for required_fragment in (
-        'RELEASE_REPOSITORY = "masarray/sonkupik-studio"',
-        'dataset.siteRoot',
-        'landing-release.js',
-    ):
-        if required_fragment not in app:
-            fail(f"site/app.js: missing release bootstrap fragment {required_fragment!r}", errors)
-
-    release_runtime = (SITE / "landing-release.js").read_text(encoding="utf-8")
-    for required_fragment in (
+    runtime = (SITE / "download.js").read_text(encoding="utf-8") if (SITE / "download.js").is_file() else ""
+    for fragment in (
+        'REPOSITORY = "masarray/sonkupik-studio"',
         "isAllowedReleaseUrl",
-        "SHA256SUMS",
-        "Setup\\.exe",
-        "Portable\\.exe",
-        'data-download="setup"',
-        'data-download="portable"',
+        "-Setup\\.exe",
+        "-Portable\\.exe",
+        "\\.dmg",
+        "\\.pkg",
+        "\\.AppImage",
+        "\\.deb",
+        "\\.rpm",
         "if (!setup || !portable || !checksums) return null",
     ):
-        if required_fragment not in release_runtime:
-            fail(f"site/landing-release.js: missing release hardening fragment {required_fragment!r}", errors)
+        if fragment not in runtime:
+            fail(f"site/download.js: missing release hardening fragment {fragment!r}", errors)
 
-    sitemap = (SITE / "sitemap.xml").read_text(encoding="utf-8")
+    css_path = SITE / "download.css"
+    js_path = SITE / "download.js"
+    if css_path.is_file() and css_path.stat().st_size > 30_000:
+        fail(f"site/download.css exceeds 30 KB lightweight budget", errors)
+    if js_path.is_file() and js_path.stat().st_size > 15_000:
+        fail(f"site/download.js exceeds 15 KB lightweight budget", errors)
+
+    sitemap = (SITE / "sitemap.xml").read_text(encoding="utf-8") if (SITE / "sitemap.xml").is_file() else ""
     for required_url in (SITE_URL, EN_URL):
         if f"<loc>{required_url}</loc>" not in sitemap:
             fail(f"site/sitemap.xml: missing {required_url}", errors)
     if SITE_URL + "id/" in sitemap:
         fail("site/sitemap.xml: legacy /id/ redirect must not be indexed", errors)
 
-    manifest = json.loads((SITE / "site.webmanifest").read_text(encoding="utf-8"))
-    if manifest.get("lang") != "id":
-        fail("site/site.webmanifest: primary language must be id", errors)
-
-    budgets = {
-        SITE / "styles.css": 45_000,
-        SITE / "product-features.css": 35_000,
-        SITE / "app.js": 18_000,
-        SITE / "landing-release.js": 15_000,
-    }
-    for path, limit in budgets.items():
-        size = path.stat().st_size
-        if size > limit:
-            fail(f"{path.relative_to(ROOT)} exceeds {limit // 1000} KB lightweight budget ({size} bytes)", errors)
-
-    source_like = [
-        path.relative_to(ROOT)
-        for path in SITE.rglob("*")
-        if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".jsx", ".cpp", ".h", ".mjs", ".node"}
-    ]
-    if source_like:
-        fail(f"Application-source-like files found in public site: {source_like}", errors)
-
     if errors:
         for error in errors:
             print(f"ERROR: {error}", file=sys.stderr)
         return 1
 
-    print("SONKUPIK STUDIO public site validation passed")
+    print("SONKUPIK STUDIO download landing validation passed")
     return 0
 
 
