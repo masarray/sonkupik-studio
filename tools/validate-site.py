@@ -109,7 +109,7 @@ def validate_page(path: pathlib.Path, expected_lang: str, canonical: str, errors
         fail(f"{path}: links point to missing fragments {missing_fragments}", errors)
 
     if "api.github.com/repos/masarray/sonkupik-studio/releases/latest" in content:
-        fail(f"{path}: release API logic must stay in shared app.js", errors)
+        fail(f"{path}: release API logic must stay in the shared release runtime", errors)
 
     if len(content.encode("utf-8")) > 90_000:
         fail(f"{path}: HTML exceeds lightweight 90 KB limit", errors)
@@ -117,8 +117,10 @@ def validate_page(path: pathlib.Path, expected_lang: str, canonical: str, errors
 
 def validate_redirect(path: pathlib.Path, errors: list[str]) -> None:
     content = path.read_text(encoding="utf-8")
-    if 'content="0;url=../"' not in content or 'location.replace("../")' not in content:
-        fail(f"{path}: legacy route must redirect to the Indonesian root", errors)
+    has_meta_redirect = 'content="0;url=../"' in content
+    has_script_redirect = "location.replace('../' + location.hash)" in content or 'location.replace("../" + location.hash)' in content
+    if not has_meta_redirect or not has_script_redirect:
+        fail(f"{path}: legacy route must redirect to the Indonesian root while preserving fragments", errors)
     if 'content="noindex,follow"' not in content:
         fail(f"{path}: legacy route must be noindex,follow", errors)
     if f'href="{SITE_URL}"' not in content:
@@ -136,18 +138,41 @@ def validate_release(path: pathlib.Path, errors: list[str]) -> None:
     if not isinstance(release_url, str) or not release_url.startswith(RELEASE_PREFIX):
         fail(f"{path}: release URL must belong to {REPOSITORY}", errors)
 
-    for asset in payload.get("assets", []):
+    required_assets = {
+        "Setup.exe": False,
+        "Portable.exe": False,
+        "SHA256SUMS.txt": False,
+    }
+
+    assets = payload.get("assets", [])
+    if not isinstance(assets, list):
+        fail(f"{path}: assets must be a list", errors)
+        assets = []
+
+    for asset in assets:
         name = str(asset.get("name", ""))
         url = str(asset.get("browser_download_url") or asset.get("url") or "")
-        allowed_name = bool(
-            re.fullmatch(r"SONKUPIK-STUDIO-.+-Setup\.exe", name, re.IGNORECASE)
-            or re.fullmatch(r"SONKUPIK-STUDIO-.+-Portable\.exe", name, re.IGNORECASE)
-            or name == "SHA256SUMS.txt"
-        )
+        is_setup = bool(re.fullmatch(r"SONKUPIK-STUDIO-.+-Setup\.exe", name, re.IGNORECASE))
+        is_portable = bool(re.fullmatch(r"SONKUPIK-STUDIO-.+-Portable\.exe", name, re.IGNORECASE))
+        is_checksums = name == "SHA256SUMS.txt"
+        allowed_name = is_setup or is_portable or is_checksums
+
         if not allowed_name:
             fail(f"{path}: unsupported public asset name {name!r}", errors)
+            continue
         if not url.startswith(RELEASE_PREFIX):
             fail(f"{path}: asset URL does not belong to the release repository", errors)
+
+        if is_setup:
+            required_assets["Setup.exe"] = True
+        elif is_portable:
+            required_assets["Portable.exe"] = True
+        elif is_checksums:
+            required_assets["SHA256SUMS.txt"] = True
+
+    missing = [name for name, present in required_assets.items() if not present]
+    if missing:
+        fail(f"{path}: missing required public release assets: {', '.join(missing)}", errors)
 
 
 def main() -> int:
@@ -159,6 +184,7 @@ def main() -> int:
         SITE / "styles.css",
         SITE / "product-features.css",
         SITE / "app.js",
+        SITE / "landing-release.js",
         SITE / "release.json",
         SITE / "robots.txt",
         SITE / "sitemap.xml",
@@ -184,15 +210,23 @@ def main() -> int:
     for required_fragment in (
         'RELEASE_REPOSITORY = "masarray/sonkupik-studio"',
         'dataset.siteRoot',
+        'landing-release.js',
+    ):
+        if required_fragment not in app:
+            fail(f"site/app.js: missing release bootstrap fragment {required_fragment!r}", errors)
+
+    release_runtime = (SITE / "landing-release.js").read_text(encoding="utf-8")
+    for required_fragment in (
         "isAllowedReleaseUrl",
         "SHA256SUMS",
         "Setup\\.exe",
         "Portable\\.exe",
         'data-download="setup"',
         'data-download="portable"',
+        "if (!setup || !portable || !checksums) return null",
     ):
-        if required_fragment not in app:
-            fail(f"site/app.js: missing release hardening fragment {required_fragment!r}", errors)
+        if required_fragment not in release_runtime:
+            fail(f"site/landing-release.js: missing release hardening fragment {required_fragment!r}", errors)
 
     sitemap = (SITE / "sitemap.xml").read_text(encoding="utf-8")
     for required_url in (SITE_URL, EN_URL):
@@ -209,6 +243,7 @@ def main() -> int:
         SITE / "styles.css": 45_000,
         SITE / "product-features.css": 35_000,
         SITE / "app.js": 18_000,
+        SITE / "landing-release.js": 15_000,
     }
     for path, limit in budgets.items():
         size = path.stat().st_size
