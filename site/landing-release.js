@@ -20,14 +20,22 @@ function normalizedRelease(payload) {
     size: Number(asset?.size || 0),
   })).filter((asset) => asset.name && isAllowedReleaseUrl(asset.url));
   const find = (pattern) => safeAssets.find((asset) => pattern.test(asset.name));
+  const setup = find(/^SONKUPIK-STUDIO-.*-Setup\.exe$/i);
+  const portable = find(/^SONKUPIK-STUDIO-.*-Portable\.exe$/i);
+  const checksums = find(/^SHA256SUMS\.txt$/i);
+
+  // Never advertise an incomplete release. A release is downloadable only when
+  // all three official distribution assets exist and belong to this repository.
+  if (!setup || !portable || !checksums) return null;
+
   return {
     tag: String(payload.tag_name || payload.version || "Latest"),
     name: String(payload.name || payload.tag_name || "SONKUPIK STUDIO"),
     releaseUrl,
     publishedAt: payload.published_at || payload.publishedAt || "",
-    setup: find(/^SONKUPIK-STUDIO-.*-Setup\.exe$/i),
-    portable: find(/^SONKUPIK-STUDIO-.*-Portable\.exe$/i),
-    checksums: find(/^SHA256SUMS\.txt$/i),
+    setup,
+    portable,
+    checksums,
   };
 }
 
