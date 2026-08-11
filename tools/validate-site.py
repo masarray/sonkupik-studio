@@ -11,6 +11,7 @@ from html.parser import HTMLParser
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
+README = ROOT / "README.md"
 REPOSITORY = "masarray/sonkupik-studio"
 SITE_URL = "https://masarray.github.io/sonkupik-studio/"
 EN_URL = SITE_URL + "en/"
@@ -194,6 +195,7 @@ def validate_release(path: pathlib.Path, errors: list[str]) -> None:
 def main() -> int:
     errors: list[str] = []
     required_files = [
+        README,
         SITE / "index.html",
         SITE / "en" / "index.html",
         SITE / "id" / "index.html",
@@ -222,15 +224,34 @@ def main() -> int:
         "isAllowedReleaseUrl",
         "-Setup\\.exe",
         "-Portable\\.exe",
-        "\\.dmg",
-        "\\.pkg",
-        "\\.AppImage",
-        "\\.deb",
-        "\\.rpm",
+        "macOS-x64\\.dmg",
+        "macOS-arm64\\.dmg",
+        "Linux-x64\\.AppImage",
+        "Linux-x64\\.deb",
+        "Linux-arm64\\.AppImage",
+        "Linux-arm64\\.deb",
+        'data-platform-variant',
+        "setPlatformSummary",
+        "verifiedPending",
         "if (!setup || !portable || !checksums) return null",
     ):
         if fragment not in runtime:
             fail(f"site/download.js: missing release hardening fragment {fragment!r}", errors)
+
+    readme = README.read_text(encoding="utf-8") if README.is_file() else ""
+    for fragment in (
+        ".github/workflows/release-windows.yml",
+        ".github/workflows/release-macos.yml",
+        ".github/workflows/release-linux.yml",
+        "macOS-x64.dmg",
+        "macOS-arm64.dmg",
+        "Linux-x64.AppImage",
+        "Linux-arm64.AppImage",
+        "CI build + packaged payload verified",
+        "architecture-specific links",
+    ):
+        if fragment not in readme:
+            fail(f"README.md: cross-platform status is not synchronized; missing {fragment!r}", errors)
 
     css_path = SITE / "download.css"
     polish_path = SITE / "polish.css"
