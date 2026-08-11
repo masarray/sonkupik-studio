@@ -95,6 +95,9 @@ jobs:
               print(f"Latest release API unavailable; keeping committed fallback: {error}")
           PY
 
+      - name: Synchronize direct installer routes
+        run: python tools/sync-direct-download.py
+
       - name: Validate software download site
         run: python tools/validate-site.py
 
