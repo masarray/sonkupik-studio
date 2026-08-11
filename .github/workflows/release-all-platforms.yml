@@ -9,7 +9,7 @@ on:
 
 permissions:
   actions: write
-  contents: read
+  contents: write
 
 concurrency:
   group: release-all-platforms
@@ -17,48 +17,131 @@ concurrency:
 
 jobs:
   release:
-    name: Publish Linux then macOS
+    name: Publish verified all-platform artifacts
     runs-on: ubuntu-24.04
     env:
       GH_TOKEN: ${{ github.token }}
       REPOSITORY: ${{ github.repository }}
+      LINUX_QA_RUN: '31454406052'
+      MACOS_QA_RUN: '31453176823'
 
     steps:
-      - name: Publish Linux x64 and ARM64
-        shell: bash
-        run: |
-          set -euo pipefail
-          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run release-linux.yml --repo "$REPOSITORY" --ref main \
-            -f publish_x64=true \
-            -f publish_arm64=true
-          sleep 5
-          run_id="$(gh run list --repo "$REPOSITORY" --workflow release-linux.yml --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq ".[] | select(.createdAt >= \"$started\") | .databaseId" | head -n1)"
-          test -n "$run_id"
-          echo "Linux release run: $run_id"
-          gh run watch "$run_id" --repo "$REPOSITORY" --exit-status --interval 10
+      - uses: actions/checkout@v6
+        name: Checkout distribution repository
 
-      - name: Publish macOS Intel and Apple Silicon
+      - name: Resolve pinned release provenance
         shell: bash
         run: |
           set -euo pipefail
-          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run release-macos.yml --repo "$REPOSITORY" --ref main \
-            -f publish_x64=true \
-            -f publish_arm64=true \
-            -f allow_unnotarized=true
-          sleep 5
-          run_id="$(gh run list --repo "$REPOSITORY" --workflow release-macos.yml --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq ".[] | select(.createdAt >= \"$started\") | .databaseId" | head -n1)"
-          test -n "$run_id"
-          echo "macOS release run: $run_id"
-          gh run watch "$run_id" --repo "$REPOSITORY" --exit-status --interval 10
+          node <<'NODE'
+          const fs = require('node:fs');
+          const cfg = JSON.parse(fs.readFileSync('.github/release-source.json', 'utf8'));
+          const version = String(cfg.version || '');
+          const sourceRef = String(cfg.source_ref || '');
+          if (!/^v\d+\.\d+\.\d+$/.test(version)) throw new Error(`Invalid release version: ${version}`);
+          if (!/^[0-9a-fA-F]{40}$/.test(sourceRef)) throw new Error('Source ref must be a pinned 40-character commit SHA');
+          fs.appendFileSync(process.env.GITHUB_ENV, `RELEASE_VERSION=${version}\nPINNED_SOURCE=${sourceRef}\n`);
+          NODE
+          gh release view "$RELEASE_VERSION" --repo "$REPOSITORY" >/dev/null
+
+      - name: Download verified Linux QA artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p staged/linux
+          gh run download "$LINUX_QA_RUN" --repo "$REPOSITORY" \
+            --pattern 'SONKUPIK-STUDIO-Linux-*' \
+            --dir staged/linux
+          find staged/linux -maxdepth 5 -type f -print | sort
+
+      - name: Download verified macOS QA artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p staged/macos
+          gh run download "$MACOS_QA_RUN" --repo "$REPOSITORY" \
+            --pattern 'SONKUPIK-STUDIO-macOS-*' \
+            --dir staged/macos
+          find staged/macos -maxdepth 5 -type f -print | sort
+
+      - name: Verify artifact provenance and trust status
+        shell: bash
+        run: |
+          set -euo pipefail
+          for status in $(find staged/linux staged/macos -type f \( -name 'linux-*-status.txt' -o -name 'macos-*-status.txt' \)); do
+            grep -Fq "source_commit=$PINNED_SOURCE" "$status" || {
+              echo "Artifact provenance mismatch: $status" >&2
+              cat "$status" >&2
+              exit 1
+            }
+            cat "$status"
+          done
+
+          test "$(find staged/linux -type f -name 'linux-*-status.txt' | wc -l | tr -d ' ')" -eq 2
+          test "$(find staged/macos -type f -name 'macos-*-status.txt' | wc -l | tr -d ' ')" -eq 2
+
+          # v0.8.44 macOS builds are intentionally published with a visible
+          # Gatekeeper warning because Developer ID credentials are not yet
+          # configured in this repository.
+          for status in $(find staged/macos -type f -name 'macos-*-status.txt'); do
+            grep -Fq 'developer_id_signed=false' "$status"
+            grep -Fq 'notarized=false' "$status"
+          done
+
+      - name: Stage all new public packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p selected
+          find staged/linux -type f \( -name 'SONKUPIK-STUDIO-*-Linux-x64.AppImage' -o -name 'SONKUPIK-STUDIO-*-Linux-x64.deb' -o -name 'SONKUPIK-STUDIO-*-Linux-arm64.AppImage' -o -name 'SONKUPIK-STUDIO-*-Linux-arm64.deb' \) -exec cp {} selected/ \;
+          find staged/macos -type f \( -name 'SONKUPIK-STUDIO-*-macOS-x64.dmg' -o -name 'SONKUPIK-STUDIO-*-macOS-arm64.dmg' \) -exec cp {} selected/ \;
+          test "$(find selected -maxdepth 1 -type f | wc -l | tr -d ' ')" -eq 6
+          ls -lh selected
+
+      - name: Upload macOS and Linux packages to public release
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release upload "$RELEASE_VERSION" --repo "$REPOSITORY" selected/* --clobber
+
+      - name: Regenerate complete SHA-256 manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf checksum-input
+          mkdir checksum-input
+          gh release download "$RELEASE_VERSION" --repo "$REPOSITORY" --dir checksum-input --pattern 'SONKUPIK-STUDIO-*'
+          (
+            cd checksum-input
+            find . -maxdepth 1 -type f -name 'SONKUPIK-STUDIO-*' -printf '%f\n' | sort | while read -r file; do
+              sha256sum "$file"
+            done
+          ) > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+          test "$(wc -l < SHA256SUMS.txt | tr -d ' ')" -eq 8
+          gh release upload "$RELEASE_VERSION" --repo "$REPOSITORY" SHA256SUMS.txt --clobber
+
+      - name: Add cross-platform release notes and macOS Gatekeeper notice
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release view "$RELEASE_VERSION" --repo "$REPOSITORY" --json body --jq .body > release-body.md
+          python <<'PY'
+          from pathlib import Path
+          path = Path('release-body.md')
+          body = path.read_text(encoding='utf-8')
+          marker = '## Cross-platform public packages'
+          if marker not in body:
+              body = body.rstrip() + '''\n\n## Cross-platform public packages\n\nSONKUPIK STUDIO v0.8.44 is now published for all currently built desktop targets:\n\n- Windows x64: Setup + Portable\n- macOS Intel/x64: DMG\n- macOS Apple Silicon/ARM64: DMG\n- Linux x64: AppImage + DEB\n- Linux ARM64: AppImage + DEB\n\n### macOS Gatekeeper notice\n\nThe v0.8.44 macOS DMGs are **unsigned and not Apple-notarized** because Developer ID credentials are not configured yet. macOS may show a Gatekeeper warning or block first launch. Verify the downloaded DMG against `SHA256SUMS.txt`. The packages passed CI build, DMG integrity, architecture, native-module and factory-preset verification, but real K500 hardware validation on each target OS is still recommended before critical use.\n'''
+              path.write_text(body, encoding='utf-8')
+          PY
+          gh release edit "$RELEASE_VERSION" --repo "$REPOSITORY" --notes-file release-body.md
 
       - name: Verify public release asset families
         shell: bash
         run: |
           set -euo pipefail
-          tag="$(gh release view --repo "$REPOSITORY" --json tagName --jq .tagName)"
-          assets="$(gh release view "$tag" --repo "$REPOSITORY" --json assets --jq '.assets[].name')"
+          assets="$(gh release view "$RELEASE_VERSION" --repo "$REPOSITORY" --json assets --jq '.assets[].name')"
           printf '%s\n' "$assets"
           for pattern in \
             'Setup.exe' \
@@ -72,4 +155,7 @@ jobs:
             'SHA256SUMS.txt'; do
             grep -Fq "$pattern" <<<"$assets" || { echo "Missing public asset family: $pattern" >&2; exit 1; }
           done
-          echo "All platform asset families are public on $tag"
+          echo "All platform asset families are public on $RELEASE_VERSION"
+
+      - name: Refresh GitHub Pages release snapshot
+        run: gh workflow run pages.yml --repo "$REPOSITORY" --ref main
