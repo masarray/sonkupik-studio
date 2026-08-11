@@ -25,7 +25,7 @@ This repository is the **public product, website and binary distribution surface
 - the bilingual GitHub Pages website;
 - public release metadata and direct-download routing;
 - Windows Setup and Portable release assets;
-- gated macOS and Linux packaging workflows;
+- independent gated macOS and Linux packaging workflows;
 - SHA-256 checksums;
 - public support and security guidance; and
 - automated validation and Pages deployment workflows.
@@ -53,9 +53,13 @@ Download only from this repository or the official website. Avoid mirrors and re
 
 ## Cross-platform release pipeline
 
-`.github/workflows/release-cross-platform.yml` builds from the same pinned source commit used by the Windows release workflow.
+Platform packaging is deliberately separated into three independent workflows:
 
-The pipeline deliberately builds each architecture on native GitHub-hosted hardware:
+- `.github/workflows/release-windows.yml` — Windows Setup + Portable;
+- `.github/workflows/release-macos.yml` — native Intel and Apple Silicon DMGs;
+- `.github/workflows/release-linux.yml` — native x64 and ARM64 AppImage + DEB packages.
+
+All three workflows build from the same source commit pinned by `.github/release-source.json`. The macOS and Linux workflows deliberately build each architecture on native GitHub-hosted hardware:
 
 1. macOS Intel (`x64`) runs on an Intel macOS runner.
 2. macOS Apple Silicon (`arm64`) runs on an Apple Silicon runner.
@@ -63,9 +67,9 @@ The pipeline deliberately builds each architecture on native GitHub-hosted hardw
 4. Every lane verifies `node-hid` and `serialport` on the runner, then executes the existing preset, layout, UX, performance, desktop-server and Electron metadata regression gates.
 5. macOS outputs DMG packages. Linux outputs AppImage + DEB packages.
 6. Packaged executable architecture, native modules, factory preset size and factory preset checksum are verified before an artifact is accepted.
-7. Successful builds are always uploaded as GitHub Actions QA artifacts.
-8. Public release attachment is manual and opt-in per operating system/architecture.
-9. macOS publication is blocked by default unless Developer ID signing and notarization are verified; an unnotarized package requires an explicit override.
+7. Successful builds are uploaded as GitHub Actions QA artifacts.
+8. Public release attachment is manual and opt-in per operating system/architecture, so QA builds do not silently become public downloads.
+9. macOS publication is blocked by default unless Developer ID signing and notarization are verified; an unnotarized package requires an explicit manual override.
 10. Public publication regenerates the complete `SHA256SUMS.txt` and requests a GitHub Pages refresh.
 
 ### Optional macOS signing secrets
@@ -95,6 +99,6 @@ python tools/validate-site.py
 
 ## Product scope
 
-Windows is the currently verified stable public platform. macOS and Linux packages must pass the cross-platform workflow and should be validated with real K500 hardware on the target operating system before being presented as fully supported for critical events or permanent installations. Hardware, firmware, USB HID/Bluetooth behavior, OS permissions and driver compatibility can vary by device revision and system configuration.
+Windows is the currently verified stable public platform. macOS and Linux packages must pass their platform workflow and should be validated with real K500 hardware on the target operating system before being presented as fully supported for critical events or permanent installations. Hardware, firmware, USB HID/Bluetooth behavior, OS permissions and driver compatibility can vary by device revision and system configuration.
 
 Copyright (C) 2026 Tutorial Mas Ari / MasArray. Product names, website content and distributed binaries remain subject to their applicable rights and notices.
