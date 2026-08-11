@@ -125,38 +125,25 @@
         <span class="release-state" data-release-status>Checking SONKUPIK STUDIO release…</span>
       </div>
 
-      <div class="platform-list" aria-label="Choose operating system">
-        <a class="platform-button is-primary" data-platform-download="windows" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Setup.exe">
-          <svg class="platform-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 3.5 10.5 2v9H2v-7.5Zm9.5-1.7L22 0v11h-10.5V1.8ZM2 12h8.5v9L2 19.5V12Zm9.5 0H22v11l-10.5-1.8V12Z"/></svg>
-          <span class="platform-copy"><strong>Windows</strong><small data-platform-status>Direct download</small></span>
-        </a>
-        <a class="platform-button" data-platform-download="macos" aria-disabled="true">
-          <svg class="platform-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.2 12.4c0-2.7 2.2-4 2.3-4.1-1.2-1.8-3.2-2-3.9-2-1.7-.2-3.2 1-4 1s-2.1-1-3.5-.9c-1.8 0-3.5 1.1-4.4 2.7-1.9 3.2-.5 8 1.3 10.6.9 1.3 2 2.7 3.4 2.6 1.4-.1 1.9-.9 3.6-.9s2.2.9 3.7.9c1.5 0 2.5-1.3 3.4-2.6 1-1.5 1.5-3 1.5-3.1-.1 0-3.4-1.3-3.4-4.2ZM14.5 4.6c.8-1 1.3-2.3 1.2-3.6-1.1 0-2.4.8-3.2 1.7-.7.8-1.3 2.2-1.2 3.4 1.2.1 2.4-.6 3.2-1.5Z"/></svg>
-          <span class="platform-copy"><strong>macOS</strong><small data-platform-status>Choose architecture below</small></span>
-        </a>
-        <a class="platform-button" data-platform-download="linux" aria-disabled="true">
-          <span class="os-linux" aria-hidden="true">🐧</span>
-          <span class="platform-copy"><strong>Linux</strong><small data-platform-status>Choose architecture below</small></span>
-        </a>
+      <div class="direct-download-grid" data-platform-matrix aria-label="Direct downloads by operating system">
+        <article class="download-os-card is-recommended" data-platform-download="windows">
+          <div class="download-os-head"><svg class="platform-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 3.5 10.5 2v9H2v-7.5Zm9.5-1.7L22 0v11h-10.5V1.8ZM2 12h8.5v9L2 19.5V12Zm9.5 0H22v11l-10.5-1.8V12Z"/></svg><div><strong>Windows</strong><span>Windows 10/11 · x64</span></div><small data-group-status="windows">Recommended</small></div>
+          <a class="direct-package primary-package" data-download="setup" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Setup.exe"><span><strong>Windows Setup</strong><small>Installer · <span data-setup-size>100 MB</span></small></span><b>Download</b></a>
+          <a class="direct-package" data-download="portable" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Portable.exe"><span><strong>Portable .exe</strong><small>No installation · <span data-portable-size>100 MB</span></small></span><b>Download</b></a>
+        </article>
+        <article class="download-os-card" data-platform-download="macos">
+          <div class="download-os-head"><svg class="platform-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.2 12.4c0-2.7 2.2-4 2.3-4.1-1.2-1.8-3.2-2-3.9-2-1.7-.2-3.2 1-4 1s-2.1-1-3.5-.9c-1.8 0-3.5 1.1-4.4 2.7-1.9 3.2-.5 8 1.3 10.6.9 1.3 2 2.7 3.4 2.6 1.4-.1 1.9-.9 3.6-.9s2.2.9 3.7.9c1.5 0 2.5-1.3 3.4-2.6 1-1.5 1.5-3 1.5-3.1-.1 0-3.4-1.3-3.4-4.2ZM14.5 4.6c.8-1 1.3-2.3 1.2-3.6-1.1 0-2.4.8-3.2 1.7-.7.8-1.3 2.2-1.2 3.4 1.2.1 2.4-.6 3.2-1.5Z"/></svg><div><strong>macOS</strong><span>Choose your Mac chip</span></div><small data-group-status="macos">2 direct downloads</small></div>
+          <a class="direct-package" data-platform-variant="macos-arm64" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-macOS-arm64.dmg"><span><strong>Apple Silicon</strong><small>M1 / M2 / M3 / M4 · DMG · 145 MB</small></span><b>Download</b></a>
+          <a class="direct-package" data-platform-variant="macos-x64" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-macOS-x64.dmg"><span><strong>Intel Mac</strong><small>x64 · DMG · 147 MB</small></span><b>Download</b></a>
+          <p class="package-warning">Not Developer ID signed/notarized yet. macOS Gatekeeper may warn on first launch.</p>
+        </article>
+        <article class="download-os-card" data-platform-download="linux">
+          <div class="download-os-head"><span class="os-linux" aria-hidden="true">🐧</span><div><strong>Linux</strong><span>x64 or ARM64</span></div><small data-group-status="linux">4 direct downloads</small></div>
+          <div class="linux-arch-row"><span>x64</span><a class="direct-package compact-package" data-platform-variant="linux-x64-appimage" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Linux-x64.AppImage"><strong>AppImage</strong><b>Download</b></a><a class="direct-package compact-package" data-platform-variant="linux-x64-deb" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Linux-x64.deb"><strong>DEB</strong><b>Download</b></a></div>
+          <div class="linux-arch-row"><span>ARM64</span><a class="direct-package compact-package" data-platform-variant="linux-arm64-appimage" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Linux-arm64.AppImage"><strong>AppImage</strong><b>Download</b></a><a class="direct-package compact-package" data-platform-variant="linux-arm64-deb" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Linux-arm64.deb"><strong>DEB</strong><b>Download</b></a></div>
+        </article>
       </div>
-
-      <div class="recommended">
-        <div class="recommended-top">
-          <div class="recommended-title"><strong>Windows Setup</strong><span>Best choice for everyday use</span></div>
-          <span class="recommended-badge">Recommended</span>
-        </div>
-        <a class="button primary download-main" data-download="setup" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Setup.exe">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3v11.2l3.8-3.8 1.4 1.4-6.2 6.2-6.2-6.2 1.4-1.4 3.8 3.8V3h2ZM4 20h16v2H4v-2Z"/></svg>
-          Download Windows Setup
-        </a>
-        <div class="download-detail"><span>Windows 10/11 · x64</span><span><span data-release-version>v0.8.44</span> · <span data-setup-size>about 100 MB</span></span></div>
-      </div>
-
-      <div class="portable-row">
-        <span>Prefer no installation?</span>
-        <a data-download="portable" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Portable.exe">Download Portable .exe <span data-portable-size>about 100 MB</span></a>
-      </div>
-      <p class="availability-note"><strong>Cross-platform status:</strong> v0.8.44 is public for Windows, macOS and Linux. macOS DMGs are not signed/notarized; verify downloads with SHA-256.</p>
+      <p class="availability-note"><strong>Every button above is a direct download.</strong> You never need to browse the GitHub Release page to find an installer.</p>
       <div class="release-links">
         <a data-download="checksums" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SHA256SUMS.txt">SHA-256 checksum</a>
         <a data-release-link href="https://github.com/masarray/sonkupik-studio/releases/tag/v0.8.44">Release notes</a>
@@ -169,7 +156,7 @@
 <section class="trust-strip" aria-label="Distribution trust">
   <div class="container trust-grid">
     <div class="trust-item"><strong>Direct downloads</strong><span>Primary buttons open installer files, not repository pages.</span></div>
-    <div class="trust-item"><strong>Verified release set</strong><span>Setup, Portable and SHA-256 are published together.</span></div>
+    <div class="trust-item"><strong>Verified release set</strong><span>Windows, macOS, Linux packages and SHA-256 are published together.</span></div>
     <div class="trust-item"><strong>User presets stay safe</strong><span>Personal presets in Documents are not overwritten by factory updates.</span></div>
     <div class="trust-item"><strong>Works offline</strong><span>The last valid factory preset remains available without internet access.</span></div>
   </div>
@@ -201,7 +188,7 @@
       <p class="section-lead">The workflow is designed for everyday users and technicians who want to get to work quickly.</p>
     </div>
     <div class="steps">
-      <article class="step"><span class="step-num">01</span><h3>Install SONKUPIK STUDIO</h3><p>Click Windows Setup above. The installed build is recommended for faster startup than the Portable package.</p></article>
+      <article class="step"><span class="step-num">01</span><h3>Download SONKUPIK STUDIO</h3><p>Choose Windows, macOS or Linux in the panel above, then click the package that matches your computer architecture.</p></article>
       <article class="step"><span class="step-num">02</span><h3>Connect the K500</h3><p>Connect the processor through supported USB HID or Bluetooth, then select the device in the app.</p></article>
       <article class="step"><span class="step-num">03</span><h3>Tune and save</h3><p>Adjust parameters, listen to the result, save a PC preset, or write it to the target device slot.</p></article>
     </div>

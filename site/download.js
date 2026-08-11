@@ -78,40 +78,12 @@
   }
 
   function mountPlatformMatrix() {
-    const list = document.querySelector(".platform-list");
-    if (!list || document.querySelector("[data-platform-matrix]")) return;
-    const matrix = document.createElement("div");
-    matrix.className = "platform-matrix";
-    matrix.dataset.platformMatrix = "true";
-    matrix.innerHTML = `
-      <div class="platform-variant-group" data-platform-group="macos">
-        <div class="platform-variant-head"><strong>${copy.macTitle}</strong><span data-group-status="macos">${copy.verifiedPending}</span></div>
-        <div class="platform-variant-links">
-          <a data-platform-variant="macos-arm64" aria-disabled="true">${copy.apple}<small>DMG · ARM64</small></a>
-          <a data-platform-variant="macos-x64" aria-disabled="true">${copy.intel}<small>DMG · x64</small></a>
-        </div>
-      </div>
-      <div class="platform-variant-group" data-platform-group="linux">
-        <div class="platform-variant-head"><strong>${copy.linuxTitle}</strong><span data-group-status="linux">${copy.verifiedPending}</span></div>
-        <div class="platform-variant-architectures">
-          <div><b>x64</b><a data-platform-variant="linux-x64-appimage" aria-disabled="true">${copy.appImage}</a><a data-platform-variant="linux-x64-deb" aria-disabled="true">${copy.deb}</a></div>
-          <div><b>ARM64</b><a data-platform-variant="linux-arm64-appimage" aria-disabled="true">${copy.appImage}</a><a data-platform-variant="linux-arm64-deb" aria-disabled="true">${copy.deb}</a></div>
-        </div>
-      </div>`;
-    list.insertAdjacentElement("afterend", matrix);
-
     const availability = document.querySelector(".availability-note");
     if (availability) {
-      const label = language === "en" ? "Cross-platform status:" : "Status lintas platform:";
-      availability.innerHTML = `<strong>${label}</strong> ${copy.availability}`;
+      const label = language === "en" ? "Every button above is a direct download." : "Semua tombol di atas adalah download langsung.";
+      const detail = language === "en" ? " Package URLs refresh automatically from the latest official release." : " URL paket diperbarui otomatis dari rilis resmi terbaru.";
+      availability.innerHTML = `<strong>${label}</strong>${detail}`;
     }
-
-    document.querySelectorAll(".faq-item").forEach((item) => {
-      const summary = item.querySelector("summary");
-      if (!summary || !/macOS.*Linux|Linux.*macOS/i.test(summary.textContent || "")) return;
-      const paragraph = item.querySelector(".faq-answer p");
-      if (paragraph) paragraph.textContent = copy.faq;
-    });
   }
 
   function isAllowedReleaseUrl(value) {
@@ -202,16 +174,9 @@
   }
 
   function setPlatformSummary(platform, hasPublicAssets) {
-    document.querySelectorAll(`[data-platform-download="${platform}"]`).forEach((link) => {
-      const status = link.querySelector("[data-platform-status]");
-      link.removeAttribute("href");
-      link.setAttribute("aria-disabled", "true");
-      link.classList.add("is-cross-platform-status");
-      link.classList.toggle("has-public-assets", hasPublicAssets);
-      if (status) status.textContent = hasPublicAssets ? copy.choose : copy.verifiedPending;
+    document.querySelectorAll(`[data-platform-download="${platform}"]`).forEach((card) => {
+      card.classList.toggle("is-unavailable", !hasPublicAssets);
     });
-    const groupStatus = document.querySelector(`[data-group-status="${platform}"]`);
-    if (groupStatus) groupStatus.textContent = hasPublicAssets ? copy.choose : copy.verifiedPending;
   }
 
   function bindVariant(key, asset) {
@@ -229,11 +194,6 @@
     const base = link.childNodes[0]?.textContent?.trim() || link.textContent.trim();
     const size = humanSize(asset.size);
     link.setAttribute("aria-label", `${base} — ${asset.name}${size ? ` — ${size}` : ""}`);
-    const small = link.querySelector("small");
-    if (small && size) {
-      const format = small.textContent.split(" · ")[0];
-      small.textContent = `${format} · ${size}`;
-    }
   }
 
   function applyRelease(release, mode) {
@@ -248,7 +208,6 @@
     bindDirect('[data-download="setup"]', release.setup, copy.setup);
     bindDirect('[data-download="portable"]', release.portable, copy.portable);
     bindDirect('[data-download="checksums"]', release.checksums, "SHA256SUMS.txt");
-    bindDirect('[data-platform-download="windows"]', release.setup, copy.setup);
 
     bindVariant("macos-x64", release.macosX64);
     bindVariant("macos-arm64", release.macosArm64);
@@ -291,8 +250,6 @@
       if (applyRelease(normalizeRelease(await fetchJson(SNAPSHOT_URL)), "snapshot")) return;
     } catch {}
     setText("[data-release-status]", copy.unavailable);
-    setPlatformSummary("macos", false);
-    setPlatformSummary("linux", false);
   }
 
   document.addEventListener("click", (event) => {
@@ -302,7 +259,5 @@
 
   mountStoreJourney();
   mountPlatformMatrix();
-  setPlatformSummary("macos", false);
-  setPlatformSummary("linux", false);
   resolveRelease();
 })();
