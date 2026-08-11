@@ -15,6 +15,7 @@ REPOSITORY = "masarray/sonkupik-studio"
 SITE_URL = "https://masarray.github.io/sonkupik-studio/"
 EN_URL = SITE_URL + "en/"
 RELEASE_PREFIX = f"https://github.com/{REPOSITORY}/releases/"
+TOKOPEDIA_PREFIX = "https://www.tokopedia.com/dr-sonkupik/"
 
 
 class PageParser(HTMLParser):
@@ -91,21 +92,42 @@ def validate_page(path: pathlib.Path, expected_lang: str, canonical: str, errors
         if not parser.meta.get(("property", property_name), ""):
             fail(f"{path}: missing {property_name}", errors)
 
-    if not any(script.get("id") == "software-structured-data" for script in parser.scripts):
+    script_ids = {script.get("id") for script in parser.scripts}
+    if "software-structured-data" not in script_ids:
         fail(f"{path}: missing SoftwareApplication structured data", errors)
+    if "faq-structured-data" not in script_ids:
+        fail(f"{path}: missing FAQPage structured data", errors)
 
     required_html = (
         'id="download"',
+        'id="faq"',
         'data-platform-download="windows"',
         'data-platform-download="macos"',
         'data-platform-download="linux"',
         'data-download="setup"',
         'data-download="portable"',
+        'data-k500-store',
+        'data-k500-store-nav',
+        'polish.css',
         "SONKUPIK STUDIO",
     )
     for fragment in required_html:
         if fragment not in content:
             fail(f"{path}: missing download-first fragment {fragment!r}", errors)
+
+    if content.count('class="faq-item"') < 10:
+        fail(f"{path}: beginner FAQ must contain at least 10 native accordion items", errors)
+
+    if TOKOPEDIA_PREFIX not in content:
+        fail(f"{path}: static K500 purchase route must point to Dr Sonkupik on Tokopedia", errors)
+
+    ambiguous_claims = (
+        "Aplikasi resmi untuk KTV PRO K500",
+        "Official app for KTV PRO K500",
+    )
+    for claim in ambiguous_claims:
+        if claim in content:
+            fail(f"{path}: ambiguous manufacturer-official claim must not return: {claim!r}", errors)
 
     if "KTV PRO K500 — Prosesor Karaoke Lengkap" in content or "Satu alat menggantikan" in content:
         fail(f"{path}: legacy hardware-first hero copy must not return", errors)
@@ -176,6 +198,7 @@ def main() -> int:
         SITE / "en" / "index.html",
         SITE / "id" / "index.html",
         SITE / "download.css",
+        SITE / "polish.css",
         SITE / "download.js",
         SITE / "release.json",
         SITE / "robots.txt",
@@ -210,11 +233,14 @@ def main() -> int:
             fail(f"site/download.js: missing release hardening fragment {fragment!r}", errors)
 
     css_path = SITE / "download.css"
+    polish_path = SITE / "polish.css"
     js_path = SITE / "download.js"
     if css_path.is_file() and css_path.stat().st_size > 30_000:
-        fail(f"site/download.css exceeds 30 KB lightweight budget", errors)
+        fail("site/download.css exceeds 30 KB lightweight budget", errors)
+    if polish_path.is_file() and polish_path.stat().st_size > 12_000:
+        fail("site/polish.css exceeds 12 KB lightweight budget", errors)
     if js_path.is_file() and js_path.stat().st_size > 15_000:
-        fail(f"site/download.js exceeds 15 KB lightweight budget", errors)
+        fail("site/download.js exceeds 15 KB lightweight budget", errors)
 
     sitemap = (SITE / "sitemap.xml").read_text(encoding="utf-8") if (SITE / "sitemap.xml").is_file() else ""
     for required_url in (SITE_URL, EN_URL):

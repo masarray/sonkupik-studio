@@ -14,7 +14,7 @@
   <link rel="alternate" hreflang="en" href="https://masarray.github.io/sonkupik-studio/en/">
   <link rel="alternate" hreflang="x-default" href="https://masarray.github.io/sonkupik-studio/">
   <meta property="og:title" content="Download SONKUPIK STUDIO">
-  <meta property="og:description" content="Aplikasi desktop untuk kontrol dan manajemen preset KTV PRO K500. Download installer Windows langsung dari landing page resmi.">
+  <meta property="og:description" content="Aplikasi desktop untuk kontrol dan manajemen preset KTV PRO K500. Download installer Windows langsung dari halaman download SONKUPIK STUDIO.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://masarray.github.io/sonkupik-studio/">
   <meta property="og:site_name" content="SONKUPIK STUDIO">
@@ -23,11 +23,12 @@
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Download SONKUPIK STUDIO">
-  <meta name="twitter:description" content="Control room desktop untuk KTV PRO K500. Windows installer tersedia langsung.">
+  <meta name="twitter:description" content="Control room desktop untuk KTV PRO K500. Windows installer tersedia sekarang.">
   <meta name="twitter:image" content="https://masarray.github.io/sonkupik-studio/assets/sonkupik-studio-preview.svg">
   <link rel="icon" href="assets/sonkupik-mark.svg" type="image/svg+xml">
   <link rel="manifest" href="site.webmanifest">
   <link rel="stylesheet" href="download.css">
+  <link rel="stylesheet" href="polish.css">
   <script id="software-structured-data" type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -37,12 +38,30 @@
     "applicationSubCategory":"KTV PRO K500 control and preset management software",
     "operatingSystem":"Windows 10/11 64-bit",
     "softwareVersion":"0.8.44",
-    "description":"Aplikasi desktop untuk kontrol live, preset, PEQ, crossover, dynamics, mixer dan loudspeaker management prosesor karaoke KTV PRO K500 yang kompatibel.",
+    "description":"Aplikasi desktop independen untuk kontrol live, preset, PEQ, crossover, dynamics, mixer dan loudspeaker management prosesor karaoke KTV PRO K500 yang kompatibel.",
     "url":"https://masarray.github.io/sonkupik-studio/",
     "downloadUrl":"https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Setup.exe",
     "releaseNotes":"https://github.com/masarray/sonkupik-studio/releases/tag/v0.8.44",
     "isAccessibleForFree":true,
     "publisher":{"@type":"Organization","name":"MasArray","url":"https://github.com/masarray"}
+  }
+  </script>
+  <script id="faq-structured-data" type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Apa itu SONKUPIK STUDIO?","acceptedAnswer":{"@type":"Answer","text":"SONKUPIK STUDIO adalah aplikasi desktop independen untuk mengontrol, tuning, membaca, membandingkan dan mengelola preset prosesor KTV PRO K500 yang kompatibel."}},
+      {"@type":"Question","name":"Apakah saya harus punya KTV PRO K500?","acceptedAnswer":{"@type":"Answer","text":"Untuk live control perangkat, ya. Aplikasi dapat diunduh tanpa K500, tetapi fungsi baca dan tulis parameter hardware memerlukan unit K500 yang kompatibel."}},
+      {"@type":"Question","name":"Belum punya K500, beli di mana?","acceptedAnswer":{"@type":"Answer","text":"KTV PRO K500 dapat dibeli melalui toko Dr Sonkupik di Tokopedia menggunakan tombol Beli KTV PRO K500 pada halaman ini. Harga, stok dan layanan transaksi mengikuti informasi penjual."}},
+      {"@type":"Question","name":"Apakah SONKUPIK STUDIO gratis?","acceptedAnswer":{"@type":"Answer","text":"Ya. Paket publik SONKUPIK STUDIO dapat diunduh gratis dari halaman ini."}},
+      {"@type":"Question","name":"Windows apa yang didukung?","acceptedAnswer":{"@type":"Answer","text":"Distribusi publik saat ini ditujukan untuk Windows 10 dan Windows 11 64-bit. Paket macOS dan Linux belum tersedia."}},
+      {"@type":"Question","name":"Bagaimana menghubungkan K500?","acceptedAnswer":{"@type":"Answer","text":"Hubungkan K500 melalui jalur USB HID atau Bluetooth yang kompatibel, lalu pilih perangkat dan baca statusnya dari SONKUPIK STUDIO."}},
+      {"@type":"Question","name":"Setup atau Portable?","acceptedAnswer":{"@type":"Answer","text":"Setup direkomendasikan untuk pemakaian harian dan startup yang lebih cepat. Portable cocok jika Anda tidak ingin instalasi permanen."}},
+      {"@type":"Question","name":"Kenapa Windows SmartScreen bisa muncul?","acceptedAnswer":{"@type":"Answer","text":"Binary Windows saat ini belum code-signed sehingga Windows dapat menampilkan peringatan publisher. SHA-256 disediakan untuk memverifikasi identitas file yang diunduh."}},
+      {"@type":"Question","name":"K500 tidak terdeteksi, apa yang harus dilakukan?","acceptedAnswer":{"@type":"Answer","text":"Restart K500 dan komputer, sambungkan ulang melalui USB HID atau Bluetooth yang dimaksud, lalu baca perangkat lagi. Jika masalah tetap terjadi, gunakan panduan Support dengan menyertakan versi aplikasi, Windows dan revisi perangkat."}},
+      {"@type":"Question","name":"Apakah tombol download membawa saya ke halaman repo GitHub?","acceptedAnswer":{"@type":"Answer","text":"Tidak. Tombol Setup dan Portable diarahkan langsung ke file rilis. GitHub digunakan sebagai host distribusi, checksums, release notes dan support teknis."}}
+    ]
   }
   </script>
   <script src="download.js" defer></script>
@@ -59,7 +78,8 @@
       <a href="#download">Download</a>
       <a href="#fitur">Fitur</a>
       <a href="#cara-pakai">Cara pakai</a>
-      <a href="#k500">K500</a>
+      <a href="#faq">FAQ</a>
+      <a class="nav-store" data-k500-store-nav href="https://www.tokopedia.com/dr-sonkupik/recording-tech-ktv-pro-k500-karaoke-effect-processor-4-input-6-output-digital-mixer-dengan-equalizer-compressor-anti-feedback-crossover-ktv-pro-k500" target="_blank" rel="noopener noreferrer">Beli K500</a>
     </nav>
     <div class="nav-actions">
       <div class="lang-switch" aria-label="Bahasa">
@@ -75,7 +95,7 @@
 <section class="hero" id="download">
   <div class="container hero-grid">
     <div>
-      <span class="eyebrow">Aplikasi resmi untuk KTV PRO K500</span>
+      <span class="eyebrow">Desktop control software untuk KTV PRO K500</span>
       <h1>Download<br>SONKUPIK STUDIO</h1>
       <p class="hero-lead">Kontrol K500 dari PC, atur PEQ dan crossover, kelola efek vokal, simpan preset, lalu recall setting tanpa harus mengulang dari nol.</p>
       <ul class="hero-points" aria-label="Ringkasan aplikasi">
@@ -84,15 +104,25 @@
         <li>USB HID + Bluetooth</li>
         <li>Download gratis</li>
       </ul>
+      <div class="hardware-bridge">
+        <div class="hardware-bridge-copy">
+          <span class="hardware-bridge-kicker">BELUM PUNYA K500?</span>
+          <p>SONKUPIK STUDIO adalah software kontrol untuk KTV PRO K500. Untuk live control, Anda memerlukan unit K500 yang kompatibel.</p>
+        </div>
+        <a class="store-button" data-k500-store href="https://www.tokopedia.com/dr-sonkupik/recording-tech-ktv-pro-k500-karaoke-effect-processor-4-input-6-output-digital-mixer-dengan-equalizer-compressor-anti-feedback-crossover-ktv-pro-k500" target="_blank" rel="noopener noreferrer" aria-label="Beli KTV PRO K500 di Tokopedia Dr Sonkupik">
+          <svg class="lucide-store-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="store-button-copy"><strong>Beli KTV PRO K500</strong><small>Tokopedia · Dr Sonkupik</small></span>
+        </a>
+      </div>
     </div>
 
     <aside class="download-panel" aria-label="Download SONKUPIK STUDIO">
       <div class="download-head">
         <div>
-          <span class="release-label">Latest stable release</span>
+          <span class="release-label">Rilis stabil terbaru</span>
           <h2>SONKUPIK STUDIO <span data-release-version>v0.8.44</span></h2>
         </div>
-        <span class="release-state" data-release-status>Memeriksa rilis resmi…</span>
+        <span class="release-state" data-release-status>Memeriksa rilis SONKUPIK STUDIO…</span>
       </div>
 
       <div class="platform-list" aria-label="Pilih sistem operasi">
@@ -183,25 +213,38 @@
     <div>
       <span class="eyebrow">Perangkat yang dikontrol</span>
       <h2>SONKUPIK STUDIO dibuat untuk KTV PRO K500.</h2>
-      <p class="section-lead">Landing page ini berfokus pada software. K500 adalah hardware DSP yang dikontrol oleh aplikasi untuk live tuning dan manajemen preset.</p>
+      <p class="section-lead">SONKUPIK STUDIO adalah proyek software independen. K500 adalah hardware DSP yang dikontrol oleh aplikasi untuk live tuning dan manajemen preset.</p>
       <ul class="compat-list">
         <li>Live control melalui USB HID dan Bluetooth</li>
         <li>PEQ, dynamics, vocal effects, crossover dan output management</li>
         <li>Preset PC, readback, compare, mass upload dan permanent store</li>
       </ul>
     </div>
-    <aside class="device-note"><strong>Belum punya K500?</strong><p>Anda tetap dapat mengunduh aplikasi sekarang. Untuk live control, diperlukan perangkat KTV PRO K500 yang kompatibel.</p></aside>
+    <aside class="device-note">
+      <strong>Belum punya K500?</strong>
+      <p>Anda dapat mengunduh software sekarang. Untuk live control diperlukan KTV PRO K500 yang kompatibel. Jika belum punya, perangkat dapat dibeli melalui toko Dr Sonkupik di Tokopedia.</p>
+      <a class="store-button" data-k500-store-secondary href="https://www.tokopedia.com/dr-sonkupik/recording-tech-ktv-pro-k500-karaoke-effect-processor-4-input-6-output-digital-mixer-dengan-equalizer-compressor-anti-feedback-crossover-ktv-pro-k500" target="_blank" rel="noopener noreferrer" aria-label="Beli KTV PRO K500 di Tokopedia Dr Sonkupik">
+        <svg class="lucide-store-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="store-button-copy"><strong>Beli KTV PRO K500</strong><small>Tokopedia · Dr Sonkupik</small></span>
+      </a>
+    </aside>
   </div>
 </section>
 
-<section class="section alt">
-  <div class="container">
-    <div class="section-heading"><span class="eyebrow">Pertanyaan singkat</span><h2>Sebelum download</h2></div>
+<section class="section alt" id="faq">
+  <div class="container faq-shell">
+    <div class="section-heading"><span class="eyebrow">Pertanyaan yang sering ditanyakan</span><h2>Sebelum download atau membeli K500</h2><p class="section-lead">Jawaban singkat untuk hal-hal yang biasanya membuat pengguna baru ragu.</p></div>
     <div class="faq">
-      <article><h3>Apakah installer membawa saya ke GitHub?</h3><p>Tidak. Tombol Windows Setup dan Portable diarahkan langsung ke file release resmi. GitHub hanya dipakai sebagai host distribusi dan release notes.</p></article>
-      <article><h3>Kenapa macOS dan Linux belum bisa diklik?</h3><p>Release publik saat ini hanya memiliki binary Windows. Tombol macOS/Linux sudah disiapkan dan akan aktif otomatis ketika paket resminya tersedia.</p></article>
-      <article><h3>Setup atau Portable?</h3><p>Gunakan Setup untuk pemakaian harian dan startup lebih cepat. Portable cocok jika Anda tidak ingin instalasi permanen.</p></article>
-      <article><h3>Windows menampilkan SmartScreen?</h3><p>Binary saat ini belum code-signed, sehingga Windows dapat menampilkan peringatan publisher pada first launch. Verifikasi SHA-256 tersedia di halaman ini.</p></article>
+      <details class="faq-item" open><summary>Apa itu SONKUPIK STUDIO?</summary><div class="faq-answer"><p>SONKUPIK STUDIO adalah aplikasi desktop independen untuk mengontrol, tuning, membaca, membandingkan dan mengelola preset KTV PRO K500 yang kompatibel. Software ini tidak menggantikan hardware K500; ia menjadi control room di PC.</p></div></details>
+      <details class="faq-item"><summary>Apakah saya harus punya KTV PRO K500?</summary><div class="faq-answer"><p>Untuk live control perangkat, ya. Anda boleh mengunduh aplikasi tanpa K500, tetapi fungsi baca/tulis parameter hardware memerlukan unit K500 yang kompatibel.</p></div></details>
+      <details class="faq-item"><summary>Belum punya K500, beli di mana?</summary><div class="faq-answer"><p>Gunakan tombol <strong>Beli KTV PRO K500</strong> di halaman ini untuk membuka listing Dr Sonkupik di Tokopedia. Harga, stok, varian, garansi dan layanan transaksi mengikuti informasi terbaru dari penjual.</p><a class="faq-link" href="https://www.tokopedia.com/dr-sonkupik/recording-tech-ktv-pro-k500-karaoke-effect-processor-4-input-6-output-digital-mixer-dengan-equalizer-compressor-anti-feedback-crossover-ktv-pro-k500" target="_blank" rel="noopener noreferrer">Buka Tokopedia →</a></div></details>
+      <details class="faq-item"><summary>Apakah SONKUPIK STUDIO gratis?</summary><div class="faq-answer"><p>Ya. Paket publik SONKUPIK STUDIO dapat diunduh gratis dari halaman ini. Tombol utama mengarah langsung ke installer Windows release terbaru.</p></div></details>
+      <details class="faq-item"><summary>Windows apa yang didukung? Bagaimana dengan macOS dan Linux?</summary><div class="faq-answer"><p>Distribusi publik saat ini ditujukan untuk Windows 10/11 64-bit. Paket macOS dan Linux belum tersedia; tombolnya sengaja dinonaktifkan agar tidak memberi kesan ada installer yang sebenarnya belum dirilis.</p></div></details>
+      <details class="faq-item"><summary>Bagaimana menghubungkan K500 ke SONKUPIK STUDIO?</summary><div class="faq-answer"><p>Hubungkan K500 melalui USB HID atau Bluetooth yang kompatibel, lalu pilih perangkat dan baca statusnya dari aplikasi. Dukungan aktual dapat berbeda menurut revisi hardware, firmware dan konfigurasi Windows.</p></div></details>
+      <details class="faq-item"><summary>Setup atau Portable, pilih yang mana?</summary><div class="faq-answer"><p><strong>Setup</strong> direkomendasikan untuk pemakaian harian dan startup lebih cepat. <strong>Portable</strong> cocok jika Anda tidak ingin instalasi permanen atau ingin menjalankan aplikasi dari lokasi yang fleksibel.</p></div></details>
+      <details class="faq-item"><summary>Windows SmartScreen muncul. Apakah file rusak?</summary><div class="faq-answer"><p>Tidak otomatis berarti file rusak. Binary Windows saat ini belum code-signed sehingga Windows dapat menampilkan peringatan publisher. Gunakan <a class="faq-link" data-download="checksums" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SHA256SUMS.txt">SHA-256 checksum</a> dari release yang sama untuk memverifikasi file yang Anda unduh.</p></div></details>
+      <details class="faq-item"><summary>K500 tidak terdeteksi. Apa yang harus saya lakukan?</summary><div class="faq-answer"><p>Restart K500 dan komputer, sambungkan ulang melalui USB HID atau Bluetooth yang dimaksud, lalu baca perangkat lagi. Jika masih gagal, catat versi SONKUPIK STUDIO, versi Windows, revisi K500 dan jalur koneksinya.</p><a class="faq-link" href="https://github.com/masarray/sonkupik-studio/blob/main/SUPPORT.md">Buka panduan Support →</a></div></details>
+      <details class="faq-item"><summary>Apakah tombol download membawa saya ke halaman repo GitHub?</summary><div class="faq-answer"><p>Tidak. Tombol Windows Setup dan Portable diarahkan langsung ke file rilis. GitHub dipakai di belakang layar sebagai host distribusi, checksums, release notes, source dan support teknis.</p></div></details>
     </div>
   </div>
 </section>
@@ -209,7 +252,7 @@
 <section class="final-download">
   <div class="container">
     <h2>Siap menggunakan SONKUPIK STUDIO?</h2>
-    <p>Download installer resmi terbaru untuk Windows. Tidak perlu membuka folder repo atau mencari file release secara manual.</p>
+    <p>Download installer terbaru untuk Windows. Tidak perlu membuka folder repo atau mencari file release secara manual.</p>
     <div class="final-actions">
       <a class="button primary" data-download="setup" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Setup.exe">Download Windows</a>
       <a class="button" data-download="portable" href="https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Portable.exe">Portable .exe</a>
