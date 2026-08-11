@@ -17,7 +17,7 @@
     0 4px 12px rgba(0,0,0,.16),
     inset 0 1px 0 rgba(255,255,255,.46),
     inset 0 -1px 0 rgba(0,45,55,.10);
-  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease,border-color .18s ease;
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease,border-color .18s ease,background .18s ease;
 }
 
 /* The old right-side <b>Download</b> badge is not a second button. Hide it on the primary CTA. */
@@ -35,12 +35,14 @@
   font-size:.88rem;
   font-weight:780;
   letter-spacing:-.015em;
+  transition:color .18s ease,text-shadow .18s ease;
 }
 .direct-package.is-smart-primary small{
   margin-top:4px;
   color:rgba(3,31,35,.68);
   font-size:.59rem;
   font-weight:620;
+  transition:color .18s ease,text-shadow .18s ease;
 }
 
 /* A controlled shine sweep makes the primary action noticeable without permanent animation. */
@@ -70,15 +72,32 @@
   opacity:.78;
   pointer-events:none;
 }
-.direct-package.is-smart-primary:hover{
+
+/* Hover/focus deliberately shifts to a deeper jewel gradient so white text stays readable
+   even while the shine sweep crosses the CTA. */
+.direct-package.is-smart-primary:hover,
+.direct-package.is-smart-primary:focus-visible{
   transform:translateY(-2px);
   border-color:rgba(220,255,251,.52);
-  filter:saturate(1.06) brightness(1.035);
+  background:
+    radial-gradient(circle at 18% -75%,rgba(255,255,255,.22),transparent 46%),
+    linear-gradient(112deg,#248d8b 0%,#287f9c 50%,#3f67a5 100%);
+  filter:saturate(1.05) brightness(1.02);
   box-shadow:
     0 19px 42px rgba(53,196,193,.24),
     0 6px 16px rgba(0,0,0,.18),
     0 0 30px rgba(105,222,210,.10),
-    inset 0 1px 0 rgba(255,255,255,.55);
+    inset 0 1px 0 rgba(255,255,255,.38);
+}
+.direct-package.is-smart-primary:hover strong,
+.direct-package.is-smart-primary:focus-visible strong{
+  color:#f8ffff;
+  text-shadow:0 1px 10px rgba(0,20,30,.48);
+}
+.direct-package.is-smart-primary:hover small,
+.direct-package.is-smart-primary:focus-visible small{
+  color:rgba(248,255,255,.88);
+  text-shadow:0 1px 8px rgba(0,20,30,.42);
 }
 .direct-package.is-smart-primary:hover:before,
 .direct-package.is-smart-primary:focus-visible:before{
@@ -86,8 +105,11 @@
 }
 .direct-package.is-smart-primary:active{
   transform:translateY(0);
+  background:
+    radial-gradient(circle at 18% -75%,rgba(255,255,255,.18),transparent 46%),
+    linear-gradient(112deg,#247d7c 0%,#276f8c 50%,#395c94 100%);
   filter:saturate(1.02) brightness(.98);
-  box-shadow:0 9px 22px rgba(53,196,193,.15),inset 0 1px 0 rgba(255,255,255,.42);
+  box-shadow:0 9px 22px rgba(53,196,193,.15),inset 0 1px 0 rgba(255,255,255,.32);
 }
 .direct-package.is-smart-primary:focus-visible{
   outline:2px solid rgba(190,255,247,.92);

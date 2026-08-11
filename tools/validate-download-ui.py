@@ -59,9 +59,13 @@ else:
         ".direct-package.is-smart-primary:hover",
         ".direct-package.is-smart-primary:focus-visible",
         ".direct-package.is-smart-primary:hover:before",
+        ".direct-package.is-smart-primary:hover strong",
+        ".direct-package.is-smart-primary:focus-visible strong",
+        "color:#f8ffff",
+        "linear-gradient(112deg,#248d8b",
     ):
         if fragment not in cta:
-            errors.append(f"primary-cta.css: missing single-button CTA fragment {fragment}")
+            errors.append(f"primary-cta.css: missing readable-hover CTA fragment {fragment}")
 
 js = (SITE / "download.js").read_text(encoding="utf-8")
 for fragment in (
@@ -83,4 +87,4 @@ if errors:
         print(f" - {error}")
     raise SystemExit(1)
 
-print("Download UI validation passed: OS detection, one full-surface primary CTA, secondary links, architecture fallback and cross-platform override are guarded.")
+print("Download UI validation passed: OS detection, one full-surface primary CTA, readable hover/focus text, secondary links, architecture fallback and cross-platform override are guarded.")
