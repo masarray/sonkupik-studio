@@ -38,6 +38,7 @@ def polish(path: Path, lang: str) -> None:
             ("<strong>DEB</strong><b>Download</b>", "<span><strong>DEB</strong><small>Debian / Ubuntu</small></span><b>Download</b>"),
         ]
         css_href = "download-ui.css"
+        cta_href = "primary-cta.css"
         polish_href = "polish.css"
     else:
         pairs = [
@@ -49,6 +50,7 @@ def polish(path: Path, lang: str) -> None:
             ("<strong>DEB</strong><b>Download</b>", "<span><strong>DEB</strong><small>Debian / Ubuntu</small></span><b>Download</b>"),
         ]
         css_href = "../download-ui.css"
+        cta_href = "../primary-cta.css"
         polish_href = "../polish.css"
 
     for old, new in pairs:
@@ -60,6 +62,13 @@ def polish(path: Path, lang: str) -> None:
         if marker not in text:
             raise SystemExit(f"Missing stylesheet marker in {path}")
         text = text.replace(marker, marker + f'\n  <link rel="stylesheet" href="{css_href}">', 1)
+
+    cta_marker = f'href="{cta_href}"'
+    if cta_marker not in text:
+        marker = f'<link rel="stylesheet" href="{css_href}">'
+        if marker not in text:
+            raise SystemExit(f"Missing download UI stylesheet marker in {path}")
+        text = text.replace(marker, marker + f'\n  <link rel="stylesheet" href="{cta_href}">', 1)
 
     if "🐧" in text:
         raise SystemExit(f"Emoji Linux icon survived polish in {path}")

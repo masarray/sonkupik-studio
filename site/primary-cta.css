@@ -1,0 +1,101 @@
+/* Primary download CTA: the entire package surface is the button. */
+.direct-package.is-smart-primary{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:64px;
+  padding:13px 16px;
+  border:1px solid rgba(190,255,247,.36);
+  border-radius:13px;
+  background:
+    radial-gradient(circle at 18% -75%,rgba(255,255,255,.34),transparent 46%),
+    linear-gradient(112deg,#69ded2 0%,#62d1df 48%,#75ace8 100%);
+  color:#041416;
+  cursor:pointer;
+  box-shadow:
+    0 15px 34px rgba(53,196,193,.18),
+    0 4px 12px rgba(0,0,0,.16),
+    inset 0 1px 0 rgba(255,255,255,.46),
+    inset 0 -1px 0 rgba(0,45,55,.10);
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease,border-color .18s ease;
+}
+
+/* The old right-side <b>Download</b> badge is not a second button. Hide it on the primary CTA. */
+.direct-package.is-smart-primary>b{display:none!important}
+
+.direct-package.is-smart-primary>span{
+  position:relative;
+  z-index:2;
+  display:grid;
+  min-width:0;
+  line-height:1.14;
+}
+.direct-package.is-smart-primary strong{
+  color:#031719;
+  font-size:.88rem;
+  font-weight:780;
+  letter-spacing:-.015em;
+}
+.direct-package.is-smart-primary small{
+  margin-top:4px;
+  color:rgba(3,31,35,.68);
+  font-size:.59rem;
+  font-weight:620;
+}
+
+/* A controlled shine sweep makes the primary action noticeable without permanent animation. */
+.direct-package.is-smart-primary:before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  top:-35%;
+  bottom:-35%;
+  left:-48%;
+  width:38%;
+  height:auto;
+  background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.08) 24%,rgba(255,255,255,.42) 50%,rgba(255,255,255,.08) 76%,transparent 100%);
+  transform:skewX(-18deg) translateX(-120%);
+  pointer-events:none;
+  transition:transform .58s cubic-bezier(.22,.61,.36,1);
+}
+.direct-package.is-smart-primary:after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  top:0;
+  left:9%;
+  right:9%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);
+  opacity:.78;
+  pointer-events:none;
+}
+.direct-package.is-smart-primary:hover{
+  transform:translateY(-2px);
+  border-color:rgba(220,255,251,.52);
+  filter:saturate(1.06) brightness(1.035);
+  box-shadow:
+    0 19px 42px rgba(53,196,193,.24),
+    0 6px 16px rgba(0,0,0,.18),
+    0 0 30px rgba(105,222,210,.10),
+    inset 0 1px 0 rgba(255,255,255,.55);
+}
+.direct-package.is-smart-primary:hover:before,
+.direct-package.is-smart-primary:focus-visible:before{
+  transform:skewX(-18deg) translateX(430%);
+}
+.direct-package.is-smart-primary:active{
+  transform:translateY(0);
+  filter:saturate(1.02) brightness(.98);
+  box-shadow:0 9px 22px rgba(53,196,193,.15),inset 0 1px 0 rgba(255,255,255,.42);
+}
+.direct-package.is-smart-primary:focus-visible{
+  outline:2px solid rgba(190,255,247,.92);
+  outline-offset:4px;
+  border-color:rgba(225,255,252,.65);
+}
+
+@media(max-width:620px){
+  .direct-package.is-smart-primary{min-height:62px;padding:13px 14px}
+  .direct-package.is-smart-primary strong{font-size:.84rem}
+}

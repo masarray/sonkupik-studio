@@ -10,8 +10,10 @@ for rel in (Path("index.html"), Path("en/index.html")):
     path = SITE / rel
     text = path.read_text(encoding="utf-8")
     css_href = "download-ui.css" if rel == Path("index.html") else "../download-ui.css"
+    cta_href = "primary-cta.css" if rel == Path("index.html") else "../primary-cta.css"
     required = (
         f'href="{css_href}"',
+        f'href="{cta_href}"',
         'class="os-icon-shell is-windows"',
         'class="os-icon-shell is-apple"',
         'class="os-icon-shell is-linux"',
@@ -45,6 +47,22 @@ for fragment in (
     if fragment not in css:
         errors.append(f"download-ui.css: missing beginner-first fragment {fragment}")
 
+cta_path = SITE / "primary-cta.css"
+if not cta_path.is_file():
+    errors.append("primary-cta.css: missing primary download CTA stylesheet")
+else:
+    cta = cta_path.read_text(encoding="utf-8")
+    for fragment in (
+        ".direct-package.is-smart-primary>b{display:none!important}",
+        "cursor:pointer",
+        "linear-gradient(112deg,#69ded2",
+        ".direct-package.is-smart-primary:hover",
+        ".direct-package.is-smart-primary:focus-visible",
+        ".direct-package.is-smart-primary:hover:before",
+    ):
+        if fragment not in cta:
+            errors.append(f"primary-cta.css: missing single-button CTA fragment {fragment}")
+
 js = (SITE / "download.js").read_text(encoding="utf-8")
 for fragment in (
     "detectEnvironment",
@@ -65,4 +83,4 @@ if errors:
         print(f" - {error}")
     raise SystemExit(1)
 
-print("Download UI validation passed: OS detection, single-primary download, secondary links, architecture fallback and cross-platform override are guarded.")
+print("Download UI validation passed: OS detection, one full-surface primary CTA, secondary links, architecture fallback and cross-platform override are guarded.")
