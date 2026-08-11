@@ -1,0 +1,61 @@
+name: Repair platform release artifact selectors
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-release-artifact-paths.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ github.token }}
+
+      - name: Patch nested artifact paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              Path('.github/workflows/release-linux.yml'): [
+                  ('cp staged/SONKUPIK-STUDIO-*-Linux-x64.AppImage staged/SONKUPIK-STUDIO-*-Linux-x64.deb selected/',
+                   'cp staged/release/SONKUPIK-STUDIO-*-Linux-x64.AppImage staged/release/SONKUPIK-STUDIO-*-Linux-x64.deb selected/'),
+                  ('cp staged/SONKUPIK-STUDIO-*-Linux-arm64.AppImage staged/SONKUPIK-STUDIO-*-Linux-arm64.deb selected/',
+                   'cp staged/release/SONKUPIK-STUDIO-*-Linux-arm64.AppImage staged/release/SONKUPIK-STUDIO-*-Linux-arm64.deb selected/'),
+              ],
+              Path('.github/workflows/release-macos.yml'): [
+                  ('cp staged/SONKUPIK-STUDIO-*-macOS-${arch}.dmg selected/',
+                   'cp staged/release/SONKUPIK-STUDIO-*-macOS-${arch}.dmg selected/'),
+              ],
+          }
+
+          for path, pairs in replacements.items():
+              text = path.read_text(encoding='utf-8')
+              for old, new in pairs:
+                  if old not in text:
+                      raise SystemExit(f'Expected selector not found in {path}: {old}')
+                  text = text.replace(old, new)
+              path.write_text(text, encoding='utf-8')
+          PY
+
+          grep -F 'staged/release/SONKUPIK-STUDIO-' .github/workflows/release-linux.yml
+          grep -F 'staged/release/SONKUPIK-STUDIO-' .github/workflows/release-macos.yml
+
+      - name: Commit repaired workflows and remove one-shot repair job
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/fix-release-artifact-paths.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/release-linux.yml .github/workflows/release-macos.yml .github/workflows/fix-release-artifact-paths.yml
+          git commit -m 'Fix platform release artifact paths'
+          git push origin HEAD:main
