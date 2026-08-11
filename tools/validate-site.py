@@ -118,21 +118,15 @@ def validate_page(path: pathlib.Path, expected_lang: str, canonical: str, errors
 
     if content.count('class="faq-item"') < 10:
         fail(f"{path}: beginner FAQ must contain at least 10 native accordion items", errors)
-
     if TOKOPEDIA_PREFIX not in content:
         fail(f"{path}: static K500 purchase route must point to Dr Sonkupik on Tokopedia", errors)
 
-    ambiguous_claims = (
-        "Aplikasi resmi untuk KTV PRO K500",
-        "Official app for KTV PRO K500",
-    )
-    for claim in ambiguous_claims:
+    for claim in ("Aplikasi resmi untuk KTV PRO K500", "Official app for KTV PRO K500"):
         if claim in content:
             fail(f"{path}: ambiguous manufacturer-official claim must not return: {claim!r}", errors)
 
     if "KTV PRO K500 — Prosesor Karaoke Lengkap" in content or "Satu alat menggantikan" in content:
         fail(f"{path}: legacy hardware-first hero copy must not return", errors)
-
     if len(content.encode("utf-8")) > 42_000:
         fail(f"{path}: HTML exceeds lightweight 42 KB limit", errors)
 
@@ -201,6 +195,7 @@ def main() -> int:
         SITE / "id" / "index.html",
         SITE / "download.css",
         SITE / "polish.css",
+        SITE / "download-ui.css",
         SITE / "download.js",
         SITE / "release.json",
         SITE / "robots.txt",
@@ -231,12 +226,15 @@ def main() -> int:
         "Linux-arm64\\.AppImage",
         "Linux-arm64\\.deb",
         'data-platform-variant',
-        "setPlatformSummary",
-        "verifiedPending",
+        "detectEnvironment",
+        "navigator.userAgentData",
+        "applySmartPlatform",
+        "data-smart-os",
+        "data-smart-arch",
         "if (!setup || !portable || !checksums) return null",
     ):
         if fragment not in runtime:
-            fail(f"site/download.js: missing release hardening fragment {fragment!r}", errors)
+            fail(f"site/download.js: missing release/smart-download fragment {fragment!r}", errors)
 
     readme = README.read_text(encoding="utf-8") if README.is_file() else ""
     for fragment in (
@@ -255,13 +253,16 @@ def main() -> int:
 
     css_path = SITE / "download.css"
     polish_path = SITE / "polish.css"
+    ui_css_path = SITE / "download-ui.css"
     js_path = SITE / "download.js"
     if css_path.is_file() and css_path.stat().st_size > 30_000:
         fail("site/download.css exceeds 30 KB lightweight budget", errors)
     if polish_path.is_file() and polish_path.stat().st_size > 12_000:
         fail("site/polish.css exceeds 12 KB lightweight budget", errors)
-    if js_path.is_file() and js_path.stat().st_size > 15_000:
-        fail("site/download.js exceeds 15 KB lightweight budget", errors)
+    if ui_css_path.is_file() and ui_css_path.stat().st_size > 18_000:
+        fail("site/download-ui.css exceeds 18 KB lightweight budget", errors)
+    if js_path.is_file() and js_path.stat().st_size > 32_000:
+        fail("site/download.js exceeds 32 KB lightweight budget", errors)
 
     sitemap = (SITE / "sitemap.xml").read_text(encoding="utf-8") if (SITE / "sitemap.xml").is_file() else ""
     for required_url in (SITE_URL, EN_URL):
