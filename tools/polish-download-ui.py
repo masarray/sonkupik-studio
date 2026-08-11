@@ -37,6 +37,8 @@ def polish(path: Path, lang: str) -> None:
             ("<strong>AppImage</strong><b>Download</b>", "<span><strong>AppImage</strong><small>Portable</small></span><b>Download</b>"),
             ("<strong>DEB</strong><b>Download</b>", "<span><strong>DEB</strong><small>Debian / Ubuntu</small></span><b>Download</b>"),
         ]
+        css_href = "download-ui.css"
+        polish_href = "polish.css"
     else:
         pairs = [
             ("Latest stable release", "Latest public release"),
@@ -46,15 +48,18 @@ def polish(path: Path, lang: str) -> None:
             ("<strong>AppImage</strong><b>Download</b>", "<span><strong>AppImage</strong><small>Portable</small></span><b>Download</b>"),
             ("<strong>DEB</strong><b>Download</b>", "<span><strong>DEB</strong><small>Debian / Ubuntu</small></span><b>Download</b>"),
         ]
+        css_href = "../download-ui.css"
+        polish_href = "../polish.css"
 
     for old, new in pairs:
         text = text.replace(old, new)
 
-    if 'href="download-ui.css"' not in text:
-        marker = '<link rel="stylesheet" href="polish.css">'
+    css_marker = f'href="{css_href}"'
+    if css_marker not in text:
+        marker = f'<link rel="stylesheet" href="{polish_href}">'
         if marker not in text:
             raise SystemExit(f"Missing stylesheet marker in {path}")
-        text = text.replace(marker, marker + '\n  <link rel="stylesheet" href="download-ui.css">', 1)
+        text = text.replace(marker, marker + f'\n  <link rel="stylesheet" href="{css_href}">', 1)
 
     if "🐧" in text:
         raise SystemExit(f"Emoji Linux icon survived polish in {path}")
