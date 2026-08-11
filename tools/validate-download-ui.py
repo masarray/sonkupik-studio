@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard the cross-platform direct-download panel against visual/UX regressions."""
+"""Guard the cross-platform download panel against visual and beginner-UX regressions."""
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,9 +34,30 @@ for rel in (Path("index.html"), Path("en/index.html")):
         errors.append(f"{rel}: panel must say public release, not stable release, while preview platforms exist")
 
 css = (SITE / "download-ui.css").read_text(encoding="utf-8")
-for fragment in (".os-icon-shell{width:32px;height:32px", ".is-windows", ".is-apple", ".is-linux", ".release-state"):
+for fragment in (
+    ".os-icon-shell{width:32px;height:32px",
+    "html[data-smart-download-ready=\"true\"] .download-os-card{display:none}",
+    ".direct-package.is-smart-primary",
+    ".direct-package.is-smart-secondary",
+    ".smart-other-downloads",
+    ".smart-arch-picker",
+):
     if fragment not in css:
-        errors.append(f"download-ui.css: missing optical-normalization fragment {fragment}")
+        errors.append(f"download-ui.css: missing beginner-first fragment {fragment}")
+
+js = (SITE / "download.js").read_text(encoding="utf-8")
+for fragment in (
+    "detectEnvironment",
+    "navigator.userAgentData",
+    "applySmartPlatform",
+    "Download Windows Installer",
+    "Butuh versi Portable?",
+    "Download untuk sistem operasi lain",
+    "data-smart-os",
+    "data-smart-arch",
+):
+    if fragment not in js:
+        errors.append(f"download.js: missing automatic-download fragment {fragment}")
 
 if errors:
     print("Download UI validation failed:")
@@ -44,4 +65,4 @@ if errors:
         print(f" - {error}")
     raise SystemExit(1)
 
-print("Download UI validation passed: OS marks, direct package routes, status semantics and optical sizing are normalized.")
+print("Download UI validation passed: OS detection, single-primary download, secondary links, architecture fallback and cross-platform override are guarded.")
