@@ -9,8 +9,9 @@ errors = []
 for rel in (Path("index.html"), Path("en/index.html")):
     path = SITE / rel
     text = path.read_text(encoding="utf-8")
+    css_href = "download-ui.css" if rel == Path("index.html") else "../download-ui.css"
     required = (
-        'href="download-ui.css"',
+        f'href="{css_href}"',
         'class="os-icon-shell is-windows"',
         'class="os-icon-shell is-apple"',
         'class="os-icon-shell is-linux"',
