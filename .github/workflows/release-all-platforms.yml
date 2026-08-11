@@ -1,0 +1,75 @@
+name: Release SONKUPIK STUDIO on all platforms
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-all-platforms.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: release-all-platforms
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Publish Linux then macOS
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+
+    steps:
+      - name: Publish Linux x64 and ARM64
+        shell: bash
+        run: |
+          set -euo pipefail
+          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh workflow run release-linux.yml --repo "$REPOSITORY" --ref main \
+            -f publish_x64=true \
+            -f publish_arm64=true
+          sleep 5
+          run_id="$(gh run list --repo "$REPOSITORY" --workflow release-linux.yml --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq ".[] | select(.createdAt >= \"$started\") | .databaseId" | head -n1)"
+          test -n "$run_id"
+          echo "Linux release run: $run_id"
+          gh run watch "$run_id" --repo "$REPOSITORY" --exit-status --interval 10
+
+      - name: Publish macOS Intel and Apple Silicon
+        shell: bash
+        run: |
+          set -euo pipefail
+          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh workflow run release-macos.yml --repo "$REPOSITORY" --ref main \
+            -f publish_x64=true \
+            -f publish_arm64=true \
+            -f allow_unnotarized=true
+          sleep 5
+          run_id="$(gh run list --repo "$REPOSITORY" --workflow release-macos.yml --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq ".[] | select(.createdAt >= \"$started\") | .databaseId" | head -n1)"
+          test -n "$run_id"
+          echo "macOS release run: $run_id"
+          gh run watch "$run_id" --repo "$REPOSITORY" --exit-status --interval 10
+
+      - name: Verify public release asset families
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="$(gh release view --repo "$REPOSITORY" --json tagName --jq .tagName)"
+          assets="$(gh release view "$tag" --repo "$REPOSITORY" --json assets --jq '.assets[].name')"
+          printf '%s\n' "$assets"
+          for pattern in \
+            'Setup.exe' \
+            'Portable.exe' \
+            'macOS-x64.dmg' \
+            'macOS-arm64.dmg' \
+            'Linux-x64.AppImage' \
+            'Linux-x64.deb' \
+            'Linux-arm64.AppImage' \
+            'Linux-arm64.deb' \
+            'SHA256SUMS.txt'; do
+            grep -Fq "$pattern" <<<"$assets" || { echo "Missing public asset family: $pattern" >&2; exit 1; }
+          done
+          echo "All platform asset families are public on $tag"
