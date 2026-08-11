@@ -53,10 +53,70 @@ html[data-smart-download-ready="true"] .download-os-card[data-platform-download=
 html[data-smart-download-ready="true"] .direct-download-grid+.smart-other-downloads+.availability-note{margin-top:0;text-align:center}
 .final-actions [hidden]{display:none!important}
 
+/* Premium calm surface system -------------------------------------------------
+   The landing should read as one composed surface, not a stack of outlined boxes.
+   Borders are kept only as low-contrast luminous hairlines where they clarify action. */
+:root{--calm-line:rgba(185,216,232,.075);--calm-line-hi:rgba(205,235,244,.115);--calm-cyan:rgba(120,223,214,.16);--calm-cyan-hi:rgba(120,223,214,.25);--calm-surface:rgba(255,255,255,.012);--calm-surface-hi:rgba(255,255,255,.022)}
+
+/* Main download surface: one quiet object with a very fine top shine. */
+.download-panel{position:relative;border:1px solid var(--calm-line);border-radius:18px;background:linear-gradient(160deg,rgba(13,22,31,.94),rgba(7,12,18,.975) 62%);box-shadow:0 28px 80px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.038);overflow:hidden}
+.download-panel:before{content:"";position:absolute;z-index:1;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(184,235,239,.17),transparent);pointer-events:none}
+.download-head{padding:20px 18px 16px;border-bottom:1px solid rgba(185,216,232,.055)}
+.release-state{border:0;background:rgba(105,217,161,.045);box-shadow:inset 0 1px 0 rgba(255,255,255,.025);color:#93aaa3}
+
+/* Active OS is a tonal zone, not another heavy card. */
+html[data-smart-download-ready="true"] .direct-download-grid{padding:12px 16px 6px}
+html[data-smart-download-ready="true"] .download-os-card.is-smart-active{position:relative;padding:16px 16px 14px;border:1px solid rgba(185,216,232,.06);border-radius:14px;background:linear-gradient(145deg,rgba(120,223,214,.026),rgba(255,255,255,.008) 52%,rgba(121,169,232,.008));box-shadow:inset 0 1px 0 rgba(255,255,255,.026)}
+html[data-smart-download-ready="true"] .download-os-card.is-smart-active:before{content:"";position:absolute;top:0;left:18px;right:18px;height:1px;background:linear-gradient(90deg,transparent,rgba(120,223,214,.15),transparent);pointer-events:none}
+
+/* OS icon becomes a soft optical tile instead of another outlined box. */
+.os-icon-shell{border:0;border-radius:9px;background:linear-gradient(145deg,rgba(255,255,255,.052),rgba(255,255,255,.014));box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 7px 18px rgba(0,0,0,.09)}
+
+/* Main installer gets the one deliberate luminous edge in the hierarchy. */
+.direct-package.is-smart-primary{position:relative;overflow:hidden;min-height:60px;border:1px solid rgba(120,223,214,.17);border-radius:12px;background:linear-gradient(135deg,rgba(120,223,214,.075),rgba(121,169,232,.026));box-shadow:0 10px 26px rgba(0,0,0,.09),inset 0 1px 0 rgba(235,255,253,.045)}
+.direct-package.is-smart-primary:before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(179,255,247,.28),transparent);pointer-events:none}
+.direct-package.is-smart-primary:hover{transform:translateY(-1px);border-color:rgba(120,223,214,.29);background:linear-gradient(135deg,rgba(120,223,214,.095),rgba(121,169,232,.035));box-shadow:0 14px 32px rgba(0,0,0,.12),0 0 24px rgba(120,223,214,.025),inset 0 1px 0 rgba(235,255,253,.06)}
+.direct-package.is-smart-primary>b{border:0;background:rgba(120,223,214,.075);box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+
+/* Secondary actions stay typographic and visually quiet. */
+.direct-package.is-smart-secondary{opacity:.84}.direct-package.is-smart-secondary:hover{opacity:1}
+.smart-other-downloads{margin:5px 16px 8px;border-top:1px solid rgba(185,216,232,.05)}
+.smart-other-downloads summary{padding:12px 2px 8px;color:#8297a4;font-weight:600}
+.smart-os-switch{gap:8px;padding-top:6px}
+.smart-os-switch button,.smart-arch-picker button{border:1px solid rgba(185,216,232,.065);background:rgba(255,255,255,.008);box-shadow:inset 0 1px 0 rgba(255,255,255,.018)}
+.smart-os-switch button:hover,.smart-arch-picker button:hover{border-color:rgba(120,223,214,.16);background:rgba(120,223,214,.02)}
+.smart-os-switch button.is-active,.smart-arch-picker button.is-active{border-color:rgba(120,223,214,.18);background:rgba(120,223,214,.045)}
+.release-links{border-top:1px solid rgba(185,216,232,.05);background:rgba(0,0,0,.025)}
+
+/* Hardware bridge: still discoverable, no prominent frame competing with download. */
+.hardware-bridge{border:1px solid rgba(120,223,214,.075);border-radius:15px;background:linear-gradient(135deg,rgba(120,223,214,.022),rgba(121,169,232,.008));box-shadow:inset 0 1px 0 rgba(255,255,255,.022)}
+.store-button{border:1px solid rgba(120,223,214,.105);background:rgba(120,223,214,.035);box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.store-button:hover{border-color:rgba(120,223,214,.22);background:rgba(120,223,214,.06);box-shadow:0 10px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.03)}
+
+/* Trust strip should feel like editorial metadata, not a four-cell table. */
+.trust-strip{border-block:1px solid rgba(185,216,232,.045);background:rgba(255,255,255,.005)}
+.trust-item{border-right:1px solid rgba(185,216,232,.045)}
+
+/* Lower-page cards use tonal grouping and whitespace instead of strong outlines. */
+.feature-grid{gap:1px;border:0;border-radius:14px;background:rgba(185,216,232,.035);overflow:hidden}
+.feature{border:0;background:linear-gradient(145deg,rgba(255,255,255,.012),rgba(255,255,255,.006));box-shadow:inset 0 1px 0 rgba(255,255,255,.012)}
+.step{border:1px solid rgba(185,216,232,.06);background:rgba(255,255,255,.007);box-shadow:inset 0 1px 0 rgba(255,255,255,.018)}
+.step-num{border:1px solid rgba(120,223,214,.14);background:rgba(120,223,214,.025)}
+.device-note{border:1px solid rgba(185,216,232,.06);background:linear-gradient(145deg,rgba(15,24,34,.48),rgba(8,14,21,.56));box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.faq{gap:10px}
+.faq-item{border:1px solid rgba(185,216,232,.055);background:rgba(255,255,255,.007);box-shadow:inset 0 1px 0 rgba(255,255,255,.014)}
+.faq-item summary:after{border:0;background:rgba(120,223,214,.035)}
+.faq-answer{border-top:1px solid rgba(185,216,232,.04)}
+.section.alt{border-block:1px solid rgba(185,216,232,.04)}
+.final-download,.site-footer{border-top-color:rgba(185,216,232,.045)}
+.lang-switch{border-color:rgba(185,216,232,.07)}
+
+@media(max-width:900px){.trust-item:nth-child(-n+2){border-bottom-color:rgba(185,216,232,.04)}}
 @media(max-width:620px){
   .download-head{align-items:flex-start;gap:10px}.release-state{white-space:normal;text-align:right}.direct-download-grid{padding-inline:13px}.download-os-head{grid-template-columns:32px minmax(0,1fr)}.download-os-head>small{grid-column:2;justify-self:start}.linux-arch-row{grid-template-columns:46px 1fr 1fr}.direct-package{min-height:47px}
   html[data-smart-download-ready="true"] .download-os-card.is-smart-active{padding:15px}
   .smart-device-hint{margin-left:0}.smart-arch-picker{grid-template-columns:1fr 64px 64px;margin-left:0}.smart-os-switch{grid-template-columns:1fr}.smart-other-downloads{margin-inline:13px}
   html[data-smart-download-ready="true"] .download-os-card[data-platform-download="linux"] .linux-arch-row.is-smart-active-arch{grid-template-columns:1fr}
   .direct-package.is-smart-primary{min-height:60px}
+  .trust-item{border-right:0;border-bottom:1px solid rgba(185,216,232,.04)}
 }
