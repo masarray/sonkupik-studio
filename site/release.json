@@ -15,9 +15,39 @@
       "size": 104738418
     },
     {
+      "name": "SONKUPIK-STUDIO-0.8.44-macOS-arm64.dmg",
+      "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-macOS-arm64.dmg",
+      "size": 152185759
+    },
+    {
+      "name": "SONKUPIK-STUDIO-0.8.44-macOS-x64.dmg",
+      "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-macOS-x64.dmg",
+      "size": 154417336
+    },
+    {
+      "name": "SONKUPIK-STUDIO-0.8.44-Linux-x64.AppImage",
+      "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Linux-x64.AppImage",
+      "size": 163793569
+    },
+    {
+      "name": "SONKUPIK-STUDIO-0.8.44-Linux-x64.deb",
+      "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Linux-x64.deb",
+      "size": 122371568
+    },
+    {
+      "name": "SONKUPIK-STUDIO-0.8.44-Linux-arm64.AppImage",
+      "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Linux-arm64.AppImage",
+      "size": 162829941
+    },
+    {
+      "name": "SONKUPIK-STUDIO-0.8.44-Linux-arm64.deb",
+      "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SONKUPIK-STUDIO-0.8.44-Linux-arm64.deb",
+      "size": 115528360
+    },
+    {
       "name": "SHA256SUMS.txt",
       "browser_download_url": "https://github.com/masarray/sonkupik-studio/releases/download/v0.8.44/SHA256SUMS.txt",
-      "size": 203
+      "size": 835
     }
   ]
 }
