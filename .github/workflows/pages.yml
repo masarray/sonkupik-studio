@@ -98,8 +98,14 @@ jobs:
       - name: Synchronize direct installer routes
         run: python tools/sync-direct-download.py
 
+      - name: Apply cross-platform download UI polish
+        run: python tools/polish-download-ui.py
+
       - name: Validate software download site
         run: python tools/validate-site.py
+
+      - name: Validate download panel UI
+        run: python tools/validate-download-ui.py
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
