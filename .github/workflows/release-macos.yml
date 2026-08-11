@@ -192,8 +192,10 @@ jobs:
 
           APP="$(find release -type d -name 'SONKUPIK STUDIO.app' -print -quit)"
           test -n "$APP"
-          EXEC="$APP/Contents/MacOS/sonkupik_karaoke"
+          EXEC="$(find "$APP/Contents/MacOS" -maxdepth 1 -type f -perm +111 -print -quit)"
+          test -n "$EXEC"
           test -x "$EXEC"
+          echo "Packaged executable: $EXEC"
           file "$EXEC" | tee macos-executable-arch.txt
           grep -q '${{ matrix.binary_arch }}' macos-executable-arch.txt
 
