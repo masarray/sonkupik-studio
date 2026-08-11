@@ -19,13 +19,12 @@ on:
         default: false
         type: boolean
       allow_unnotarized_macos:
-        description: Allow macOS publication even when Developer ID signing/notarization is not verified
+        description: Allow macOS publication without verified Developer ID notarization
         required: true
         default: false
         type: boolean
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - '.github/release-source.json'
       - '.github/workflows/release-macos-linux.yml'
@@ -43,16 +42,15 @@ jobs:
     name: macOS universal DMG
     runs-on: macos-15-intel
     env:
-      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
       CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
       APPLE_ID: ${{ secrets.MAC_APPLE_ID }}
-      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.MAC_APP_SPECIFIC_PASSWORD }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.MAC_APPLE_APP_SPECIFIC_PASSWORD }}
       APPLE_TEAM_ID: ${{ secrets.MAC_APPLE_TEAM_ID }}
 
     steps:
       - name: Checkout distribution repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Resolve pinned source release
         id: release
@@ -68,12 +66,11 @@ jobs:
           if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) throw new Error(`Invalid source repository: ${repository}`);
           if (!/^[0-9a-fA-F]{40}$/.test(sourceRef)) throw new Error('Source ref must be a pinned 40-character commit SHA');
           fs.appendFileSync(process.env.GITHUB_ENV, `RELEASE_VERSION=${version}\n`);
-          fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\nrepository=${repository}\nsource_ref=${sourceRef}\n`);
-          console.log(`macOS build: ${version} from ${repository}@${sourceRef}`);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `repository=${repository}\nsource_ref=${sourceRef}\n`);
           NODE
 
       - name: Checkout pinned application source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ steps.release.outputs.repository }}
           ref: ${{ steps.release.outputs.source_ref }}
@@ -86,14 +83,12 @@ jobs:
           node <<'NODE'
           const fs = require('node:fs');
           const pkg = JSON.parse(fs.readFileSync('source/package.json', 'utf8'));
-          const committed = `v${pkg.version}`;
-          if (committed !== process.env.RELEASE_VERSION) throw new Error(`Pinned source version ${committed} != ${process.env.RELEASE_VERSION}`);
-          const notes = `source/RELEASE_NOTES_V${pkg.version}.md`;
-          if (!fs.existsSync(notes)) throw new Error(`Missing release notes: ${notes}`);
+          if (`v${pkg.version}` !== process.env.RELEASE_VERSION) throw new Error(`Pinned source version v${pkg.version} != ${process.env.RELEASE_VERSION}`);
+          if (!fs.existsSync(`source/RELEASE_NOTES_V${pkg.version}.md`)) throw new Error('Matching release notes are missing');
           NODE
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -147,10 +142,9 @@ jobs:
 
       - name: Build universal macOS DMG
         working-directory: source
-        shell: bash
         run: npx electron-builder --mac dmg --universal --publish never
 
-      - name: Verify macOS package, native modules and factory preset
+      - name: Verify macOS package and packaged runtime
         working-directory: source
         shell: bash
         run: |
@@ -165,41 +159,33 @@ jobs:
           EXEC="$APP/Contents/MacOS/sonkupik_karaoke"
           test -x "$EXEC"
           lipo -info "$EXEC" | tee macos-executable-arch.txt
-          grep -q 'x86_64' macos-executable-arch.txt
-          grep -q 'arm64' macos-executable-arch.txt
+          grep -q x86_64 macos-executable-arch.txt
+          grep -q arm64 macos-executable-arch.txt
 
           NATIVE_ROOT="$APP/Contents/Resources/app.asar.unpacked/node_modules"
           test -d "$NATIVE_ROOT/node-hid"
           test -d "$NATIVE_ROOT/@serialport"
           find "$NATIVE_ROOT/node-hid" "$NATIVE_ROOT/@serialport" -type f -name '*.node' -exec file {} \; | tee macos-native-binaries.txt
           grep -Eq 'x86_64|x86-64' macos-native-binaries.txt
-          grep -q 'arm64' macos-native-binaries.txt
+          grep -q arm64 macos-native-binaries.txt
 
           PRESET="$APP/Contents/Resources/presets/KARAOKE_ARTIST_LUXURY.k500"
-          test -f "$PRESET"
           PRESET="$PRESET" node <<'NODE'
           const fs = require('node:fs');
           const bytes = fs.readFileSync(process.env.PRESET);
           if (bytes.length !== 1144) throw new Error(`Factory preset size ${bytes.length} != 1144`);
-          let checksum = 0;
-          for (const b of bytes) checksum = (checksum + b) & 0xff;
+          let checksum = 0; for (const b of bytes) checksum = (checksum + b) & 0xff;
           if (checksum !== 0) throw new Error(`Factory preset checksum invalid: ${checksum}`);
           NODE
 
           developer_id_signed=false
           notarized=false
-          if codesign -dv --verbose=4 "$APP" 2>codesign-status.txt; then
-            if grep -q '^Authority=Developer ID Application:' codesign-status.txt; then developer_id_signed=true; fi
-          fi
-          if spctl -a -vv --type execute "$APP" 2>spctl-status.txt; then
-            if grep -qi 'source=Notarized Developer ID' spctl-status.txt; then notarized=true; fi
-          fi
-          {
-            echo "developer_id_signed=$developer_id_signed"
-            echo "notarized=$notarized"
-            echo "architecture=universal"
-            echo "source_commit=${{ steps.release.outputs.source_ref }}"
-          } > macos-signing-status.txt
+          codesign -dv --verbose=4 "$APP" 2>codesign-status.txt || true
+          grep -q '^Authority=Developer ID Application:' codesign-status.txt && developer_id_signed=true || true
+          spctl -a -vv --type execute "$APP" 2>spctl-status.txt || true
+          grep -qi 'source=Notarized Developer ID' spctl-status.txt && notarized=true || true
+          printf 'developer_id_signed=%s\nnotarized=%s\narchitecture=universal\nsource_commit=%s\n' \
+            "$developer_id_signed" "$notarized" '${{ steps.release.outputs.source_ref }}' > macos-signing-status.txt
           cat macos-signing-status.txt
 
       - name: Upload macOS workflow artifact
@@ -228,10 +214,12 @@ jobs:
             runner: ubuntu-24.04-arm
             file_arch: 'ARM aarch64|aarch64|ARM64'
     runs-on: ${{ matrix.runner }}
+    env:
+      SONKUPIK_RELEASE_ARCH: ${{ matrix.arch }}
 
     steps:
       - name: Checkout distribution repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Resolve pinned source release
         id: release
@@ -247,12 +235,11 @@ jobs:
           if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) throw new Error(`Invalid source repository: ${repository}`);
           if (!/^[0-9a-fA-F]{40}$/.test(sourceRef)) throw new Error('Source ref must be a pinned 40-character commit SHA');
           fs.appendFileSync(process.env.GITHUB_ENV, `RELEASE_VERSION=${version}\n`);
-          fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\nrepository=${repository}\nsource_ref=${sourceRef}\n`);
-          console.log(`Linux ${{ matrix.arch }} build: ${version} from ${repository}@${sourceRef}`);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `repository=${repository}\nsource_ref=${sourceRef}\n`);
           NODE
 
       - name: Checkout pinned application source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ steps.release.outputs.repository }}
           ref: ${{ steps.release.outputs.source_ref }}
@@ -265,14 +252,12 @@ jobs:
           node <<'NODE'
           const fs = require('node:fs');
           const pkg = JSON.parse(fs.readFileSync('source/package.json', 'utf8'));
-          const committed = `v${pkg.version}`;
-          if (committed !== process.env.RELEASE_VERSION) throw new Error(`Pinned source version ${committed} != ${process.env.RELEASE_VERSION}`);
-          const notes = `source/RELEASE_NOTES_V${pkg.version}.md`;
-          if (!fs.existsSync(notes)) throw new Error(`Missing release notes: ${notes}`);
+          if (`v${pkg.version}` !== process.env.RELEASE_VERSION) throw new Error(`Pinned source version v${pkg.version} != ${process.env.RELEASE_VERSION}`);
+          if (!fs.existsSync(`source/RELEASE_NOTES_V${pkg.version}.md`)) throw new Error('Matching release notes are missing');
           NODE
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -311,16 +296,24 @@ jobs:
           npm run test:electron-metadata
           npm run desktop:prepare
 
-      - name: Add Linux packaging configuration
+      - name: Add Linux packaging metadata
         working-directory: source
         shell: bash
         run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          pkg.desktopName = 'sonkupik-studio.desktop';
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          NODE
           cat >> electron-builder.yml <<'YAML'
           linux:
             icon: build/sonkupik-icon-modern.png
             category: AudioVideo
             executableName: sonkupik-studio
-            artifactName: SONKUPIK-STUDIO-${version}-Linux-${arch}.${ext}
+            maintainer: MasArray <ari.sulistiono@gmail.com>
+            vendor: MasArray
+            artifactName: SONKUPIK-STUDIO-${version}-Linux-${env.SONKUPIK_RELEASE_ARCH}.${ext}
             target:
               - AppImage
               - deb
@@ -328,17 +321,16 @@ jobs:
 
       - name: Build Linux AppImage and DEB
         working-directory: source
-        shell: bash
         run: npx electron-builder --linux AppImage deb --${{ matrix.arch }} --publish never
 
-      - name: Verify Linux packages, native modules and factory preset
+      - name: Verify Linux packages and packaged runtime
         working-directory: source
         shell: bash
         run: |
           set -euo pipefail
           VERSION="${RELEASE_VERSION#v}"
-          APPIMAGE="release/SONKUPIK-STUDIO-${VERSION}-Linux-${{ matrix.arch }}.AppImage"
-          DEB="release/SONKUPIK-STUDIO-${VERSION}-Linux-${{ matrix.arch }}.deb"
+          APPIMAGE="release/SONKUPIK-STUDIO-${VERSION}-Linux-${SONKUPIK_RELEASE_ARCH}.AppImage"
+          DEB="release/SONKUPIK-STUDIO-${VERSION}-Linux-${SONKUPIK_RELEASE_ARCH}.deb"
           test -s "$APPIMAGE"
           test -s "$DEB"
           chmod +x "$APPIMAGE"
@@ -348,7 +340,6 @@ jobs:
 
           rm -rf squashfs-root
           "$APPIMAGE" --appimage-extract >/dev/null
-          test -d squashfs-root
           EXEC="squashfs-root/sonkupik-studio"
           test -x "$EXEC"
           file "$EXEC" | tee linux-executable-arch.txt
@@ -361,20 +352,15 @@ jobs:
           grep -Eq '${{ matrix.file_arch }}' linux-native-binaries.txt
 
           PRESET="squashfs-root/resources/presets/KARAOKE_ARTIST_LUXURY.k500"
-          test -f "$PRESET"
           PRESET="$PRESET" node <<'NODE'
           const fs = require('node:fs');
           const bytes = fs.readFileSync(process.env.PRESET);
           if (bytes.length !== 1144) throw new Error(`Factory preset size ${bytes.length} != 1144`);
-          let checksum = 0;
-          for (const b of bytes) checksum = (checksum + b) & 0xff;
+          let checksum = 0; for (const b of bytes) checksum = (checksum + b) & 0xff;
           if (checksum !== 0) throw new Error(`Factory preset checksum invalid: ${checksum}`);
           NODE
 
-          {
-            echo "architecture=${{ matrix.arch }}"
-            echo "source_commit=${{ steps.release.outputs.source_ref }}"
-          } > linux-${{ matrix.arch }}-build-status.txt
+          printf 'architecture=%s\nsource_commit=%s\n' "$SONKUPIK_RELEASE_ARCH" '${{ steps.release.outputs.source_ref }}' > "linux-${SONKUPIK_RELEASE_ARCH}-build-status.txt"
 
       - name: Upload Linux workflow artifact
         uses: actions/upload-artifact@v4
@@ -392,9 +378,7 @@ jobs:
 
   publish:
     name: Attach selected cross-platform packages to public release
-    needs:
-      - macos
-      - linux
+    needs: [macos, linux]
     if: ${{ github.event_name == 'workflow_dispatch' && (inputs.publish_linux || inputs.publish_linux_arm64 || inputs.publish_macos) }}
     runs-on: ubuntu-24.04
     env:
@@ -402,7 +386,7 @@ jobs:
 
     steps:
       - name: Checkout distribution repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Resolve release version
         shell: bash
@@ -410,57 +394,42 @@ jobs:
           node <<'NODE'
           const fs = require('node:fs');
           const cfg = JSON.parse(fs.readFileSync('.github/release-source.json', 'utf8'));
-          const version = String(cfg.version || '');
-          if (!/^v\d+\.\d+\.\d+$/.test(version)) throw new Error(`Invalid release version: ${version}`);
-          fs.appendFileSync(process.env.GITHUB_ENV, `RELEASE_VERSION=${version}\n`);
+          if (!/^v\d+\.\d+\.\d+$/.test(String(cfg.version || ''))) throw new Error('Invalid release version');
+          fs.appendFileSync(process.env.GITHUB_ENV, `RELEASE_VERSION=${cfg.version}\n`);
           NODE
 
-      - name: Download macOS build artifact
+      - name: Download cross-platform build artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: SONKUPIK-STUDIO-macOS-*
-          path: staged/macos
+          pattern: SONKUPIK-STUDIO-*
+          path: staged
           merge-multiple: true
 
-      - name: Download Linux build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: SONKUPIK-STUDIO-Linux-*
-          path: staged/linux
-          merge-multiple: true
-
-      - name: Enforce macOS trust gate and select release assets
+      - name: Select assets and enforce macOS trust gate
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p selected checksum-input
-
           if [[ '${{ inputs.publish_macos }}' == 'true' ]]; then
-            status='staged/macos/macos-signing-status.txt'
-            test -f "$status"
-            signed="$(grep '^developer_id_signed=' "$status" | cut -d= -f2)"
-            notarized="$(grep '^notarized=' "$status" | cut -d= -f2)"
-            if [[ "$signed" != 'true' || "$notarized" != 'true' ]]; then
+            signed="$(grep '^developer_id_signed=' staged/macos-signing-status.txt | cut -d= -f2)"
+            notarized="$(grep '^notarized=' staged/macos-signing-status.txt | cut -d= -f2)"
+            if [[ "$signed" != true || "$notarized" != true ]]; then
               if [[ '${{ inputs.allow_unnotarized_macos }}' != 'true' ]]; then
                 echo 'macOS publication blocked: Developer ID signing and notarization were not both verified.' >&2
-                echo 'Configure MAC_CSC_LINK, MAC_CSC_KEY_PASSWORD, MAC_APPLE_ID, MAC_APP_SPECIFIC_PASSWORD and MAC_APPLE_TEAM_ID, or explicitly allow an unnotarized QA publication.' >&2
                 exit 1
               fi
-              echo 'WARNING: publishing macOS package without verified Developer ID notarization.' >&2
+              echo 'WARNING: publishing an unnotarized macOS QA build.' >&2
             fi
-            cp staged/macos/SONKUPIK-STUDIO-*-macOS-universal.dmg selected/
+            cp staged/SONKUPIK-STUDIO-*-macOS-universal.dmg selected/
           fi
-
           if [[ '${{ inputs.publish_linux }}' == 'true' ]]; then
-            cp staged/linux/SONKUPIK-STUDIO-*-Linux-x64.AppImage selected/
-            cp staged/linux/SONKUPIK-STUDIO-*-Linux-x64.deb selected/
+            cp staged/SONKUPIK-STUDIO-*-Linux-x64.AppImage selected/
+            cp staged/SONKUPIK-STUDIO-*-Linux-x64.deb selected/
           fi
-
           if [[ '${{ inputs.publish_linux_arm64 }}' == 'true' ]]; then
-            cp staged/linux/SONKUPIK-STUDIO-*-Linux-arm64.AppImage selected/
-            cp staged/linux/SONKUPIK-STUDIO-*-Linux-arm64.deb selected/
+            cp staged/SONKUPIK-STUDIO-*-Linux-arm64.AppImage selected/
+            cp staged/SONKUPIK-STUDIO-*-Linux-arm64.deb selected/
           fi
-
           test "$(find selected -maxdepth 1 -type f | wc -l | tr -d ' ')" -gt 0
           ls -lh selected
 
@@ -468,23 +437,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          command -v gh >/dev/null
           gh release view "$RELEASE_VERSION" >/dev/null
-
           gh release download "$RELEASE_VERSION" --dir checksum-input --pattern 'SONKUPIK-STUDIO-*'
           cp selected/* checksum-input/
-
           (
             cd checksum-input
-            find . -maxdepth 1 -type f -name 'SONKUPIK-STUDIO-*' -printf '%f\n' | sort | while read -r file; do
-              sha256sum "$file"
-            done
+            find . -maxdepth 1 -type f -name 'SONKUPIK-STUDIO-*' -printf '%f\n' | sort | while read -r file; do sha256sum "$file"; done
           ) > SHA256SUMS.txt
-
           gh release upload "$RELEASE_VERSION" selected/* SHA256SUMS.txt --clobber
-          echo 'Published assets:'
-          ls -lh selected SHA256SUMS.txt
 
       - name: Refresh GitHub Pages release snapshot
-        shell: bash
         run: gh workflow run pages.yml --ref main
