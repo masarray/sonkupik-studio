@@ -286,7 +286,7 @@ jobs:
               fi
               echo "WARNING: publishing unnotarized macOS ${arch} QA build." >&2
             fi
-            cp staged/SONKUPIK-STUDIO-*-macOS-${arch}.dmg selected/
+            cp staged/release/SONKUPIK-STUDIO-*-macOS-${arch}.dmg selected/
           }
 
           select_mac x64 '${{ inputs.publish_x64 }}'
