@@ -13,7 +13,6 @@
       ready: "Rilis resmi siap diunduh",
       snapshot: "Rilis resmi siap diunduh",
       unavailable: "Rilis tidak dapat diperiksa saat ini",
-      direct: "Download langsung",
       choose: "Pilih arsitektur di bawah",
       verifiedPending: "Build CI terverifikasi · rilis publik pending",
       published: "Dirilis",
@@ -24,8 +23,8 @@
       buy: "Beli KTV PRO K500",
       store: "Tokopedia · Dr Sonkupik",
       deviceText: "Anda dapat mengunduh software sekarang. Untuk live control, diperlukan KTV PRO K500 yang kompatibel. Jika belum punya, perangkat dapat dibeli langsung melalui toko Dr Sonkupik di Tokopedia.",
-      availability: "macOS (Intel + Apple Silicon) dan Linux (x64 + ARM64) sudah lulus build serta verifikasi payload CI. Distribusi publik tetap Windows-only sampai paket lintas platform melewati gate rilis dan validasi hardware target.",
-      faq: "Distribusi publik stabil saat ini ditujukan untuk Windows 10/11 64-bit. Build macOS Intel/Apple Silicon dan Linux x64/ARM64 sudah lulus CI, tetapi belum dipublikasikan sebagai stable download. Saat dirilis, pilihan arsitektur akan aktif otomatis di halaman ini.",
+      availability: "v0.8.44 tersedia publik untuk Windows x64, macOS Intel/Apple Silicon, dan Linux x64/ARM64. macOS belum signed/notarized, jadi Gatekeeper dapat memberi peringatan. Verifikasi dengan SHA-256.",
+      faq: "v0.8.44 tersedia untuk Windows 10/11 x64, macOS Intel/Apple Silicon, dan Linux x64/ARM64. macOS belum signed/notarized dan dapat memicu Gatekeeper. Build Mac/Linux lulus CI; uji K500 nyata tetap disarankan sebelum penggunaan kritis.",
       macTitle: "macOS",
       linuxTitle: "Linux",
       apple: "Apple Silicon",
@@ -38,7 +37,6 @@
       ready: "Official release ready to download",
       snapshot: "Official release ready to download",
       unavailable: "Release status is temporarily unavailable",
-      direct: "Direct download",
       choose: "Choose architecture below",
       verifiedPending: "CI build verified · public release pending",
       published: "Released",
@@ -49,8 +47,8 @@
       buy: "Buy KTV PRO K500",
       store: "Tokopedia · Dr Sonkupik",
       deviceText: "You can download the software now. Live device control requires a compatible KTV PRO K500. If you do not have one yet, you can buy the hardware directly from Dr Sonkupik on Tokopedia.",
-      availability: "macOS (Intel + Apple Silicon) and Linux (x64 + ARM64) have passed CI build and packaged-payload verification. Public distribution remains Windows-only until cross-platform packages clear the release gate and target-hardware validation.",
-      faq: "The current stable public distribution targets Windows 10/11 64-bit. macOS Intel/Apple Silicon and Linux x64/ARM64 builds have passed CI, but are not yet published as stable downloads. Architecture choices will enable automatically here when released.",
+      availability: "v0.8.44 is public for Windows x64, macOS Intel/Apple Silicon, and Linux x64/ARM64. macOS is not signed/notarized yet, so Gatekeeper may warn. Verify with SHA-256.",
+      faq: "v0.8.44 supports public downloads for Windows 10/11 x64, macOS Intel/Apple Silicon, and Linux x64/ARM64. macOS is not signed/notarized and may trigger Gatekeeper. Mac/Linux passed CI; real K500 testing is still recommended before critical use.",
       macTitle: "macOS",
       linuxTitle: "Linux",
       apple: "Apple Silicon",
@@ -103,7 +101,10 @@
     list.insertAdjacentElement("afterend", matrix);
 
     const availability = document.querySelector(".availability-note");
-    if (availability) availability.innerHTML = `<strong>${language === "en" ? "Cross-platform status:" : "Status lintas platform:"}</strong> ${copy.availability}`;
+    if (availability) {
+      const label = language === "en" ? "Cross-platform status:" : "Status lintas platform:";
+      availability.innerHTML = `<strong>${label}</strong> ${copy.availability}`;
+    }
 
     document.querySelectorAll(".faq-item").forEach((item) => {
       const summary = item.querySelector("summary");
@@ -116,16 +117,22 @@
   function isAllowedReleaseUrl(value) {
     try {
       const url = new URL(value);
-      return url.protocol === "https:" && url.hostname === "github.com" && url.pathname.startsWith(`/${REPOSITORY}/releases/`);
-    } catch { return false; }
+      return url.protocol === "https:" &&
+        url.hostname === "github.com" &&
+        url.pathname.startsWith(`/${REPOSITORY}/releases/`);
+    } catch {
+      return false;
+    }
   }
 
   function safeAssets(payload) {
-    return (Array.isArray(payload?.assets) ? payload.assets : []).map((asset) => ({
-      name: String(asset?.name || ""),
-      url: String(asset?.browser_download_url || asset?.url || ""),
-      size: Number(asset?.size || 0)
-    })).filter((asset) => asset.name && isAllowedReleaseUrl(asset.url));
+    return (Array.isArray(payload?.assets) ? payload.assets : [])
+      .map((asset) => ({
+        name: String(asset?.name || ""),
+        url: String(asset?.browser_download_url || asset?.url || ""),
+        size: Number(asset?.size || 0)
+      }))
+      .filter((asset) => asset.name && isAllowedReleaseUrl(asset.url));
   }
 
   function firstMatch(assets, patterns) {
@@ -149,7 +156,9 @@
       tag: String(payload.tag_name || payload.version || "Latest"),
       releaseUrl,
       publishedAt: String(payload.published_at || payload.publishedAt || ""),
-      setup, portable, checksums,
+      setup,
+      portable,
+      checksums,
       macosX64: firstMatch(assets, [/^SONKUPIK-STUDIO-.*-macOS-x64\.dmg$/i, /^SONKUPIK-STUDIO-.*-macOS-x64\.pkg$/i]),
       macosArm64: firstMatch(assets, [/^SONKUPIK-STUDIO-.*-macOS-arm64\.dmg$/i, /^SONKUPIK-STUDIO-.*-macOS-arm64\.pkg$/i]),
       linuxX64AppImage: firstMatch(assets, [/^SONKUPIK-STUDIO-.*-Linux-x64\.AppImage$/i]),
@@ -169,11 +178,17 @@
     if (!value) return "";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return "";
-    return new Intl.DateTimeFormat(language === "id" ? "id-ID" : "en-US", { day: "numeric", month: "short", year: "numeric" }).format(date);
+    return new Intl.DateTimeFormat(language === "id" ? "id-ID" : "en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    }).format(date);
   }
 
   function setText(selector, value) {
-    document.querySelectorAll(selector).forEach((node) => { node.textContent = value; });
+    document.querySelectorAll(selector).forEach((node) => {
+      node.textContent = value;
+    });
   }
 
   function bindDirect(selector, asset, label) {
@@ -215,7 +230,10 @@
     const size = humanSize(asset.size);
     link.setAttribute("aria-label", `${base} — ${asset.name}${size ? ` — ${size}` : ""}`);
     const small = link.querySelector("small");
-    if (small && size) small.textContent = `${small.textContent.split(" · ")[0]} · ${size}`;
+    if (small && size) {
+      const format = small.textContent.split(" · ")[0];
+      small.textContent = `${format} · ${size}`;
+    }
   }
 
   function applyRelease(release, mode) {
@@ -238,10 +256,18 @@
     bindVariant("linux-x64-deb", release.linuxX64Deb);
     bindVariant("linux-arm64-appimage", release.linuxArm64AppImage);
     bindVariant("linux-arm64-deb", release.linuxArm64Deb);
-    setPlatformSummary("macos", Boolean(release.macosX64 || release.macosArm64));
-    setPlatformSummary("linux", Boolean(release.linuxX64AppImage || release.linuxX64Deb || release.linuxArm64AppImage || release.linuxArm64Deb));
 
-    document.querySelectorAll("[data-release-link]").forEach((link) => { link.href = release.releaseUrl; });
+    setPlatformSummary("macos", Boolean(release.macosX64 || release.macosArm64));
+    setPlatformSummary("linux", Boolean(
+      release.linuxX64AppImage ||
+      release.linuxX64Deb ||
+      release.linuxArm64AppImage ||
+      release.linuxArm64Deb
+    ));
+
+    document.querySelectorAll("[data-release-link]").forEach((link) => {
+      link.href = release.releaseUrl;
+    });
     return true;
   }
 
@@ -258,8 +284,12 @@
 
   async function resolveRelease() {
     setText("[data-release-status]", copy.checking);
-    try { if (applyRelease(normalizeRelease(await fetchJson(RELEASE_API, true)), "live")) return; } catch {}
-    try { if (applyRelease(normalizeRelease(await fetchJson(SNAPSHOT_URL)), "snapshot")) return; } catch {}
+    try {
+      if (applyRelease(normalizeRelease(await fetchJson(RELEASE_API, true)), "live")) return;
+    } catch {}
+    try {
+      if (applyRelease(normalizeRelease(await fetchJson(SNAPSHOT_URL)), "snapshot")) return;
+    } catch {}
     setText("[data-release-status]", copy.unavailable);
     setPlatformSummary("macos", false);
     setPlatformSummary("linux", false);
