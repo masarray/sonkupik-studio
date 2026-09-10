@@ -1,0 +1,70 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'AGENTS.md'
+      - 'site/**'
+      - 'tools/**'
+      - '.github/release-source.json'
+      - '.github/workflows/**'
+      - 'README.md'
+      - 'DEPLOYMENT.md'
+      - 'SECURITY.md'
+      - 'SUPPORT.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sonkupik-studio-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate release source metadata
+        shell: python
+        run: |
+          import json
+          import pathlib
+          import re
+
+          path = pathlib.Path('.github/release-source.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          required = {'version', 'source_repository', 'source_ref'}
+          missing = sorted(required - set(data))
+          if missing:
+              raise SystemExit(f'Missing required release-source keys: {missing}')
+          if data['source_repository'] != 'masarray/ktv-studio-mixer-pro':
+              raise SystemExit('Unexpected source_repository')
+          if not re.fullmatch(r'v\d+\.\d+\.\d+', str(data['version'])):
+              raise SystemExit('version must be a vMAJOR.MINOR.PATCH tag')
+          if not re.fullmatch(r'[0-9a-f]{40}', str(data['source_ref'])):
+              raise SystemExit('source_ref must be an exact 40-character commit SHA')
+          print(f"Release source metadata valid: {data['version']} @ {data['source_ref']}")
+
+      - name: Compile validation tooling
+        run: python -m py_compile tools/*.py
+
+      - name: Prepare site using production generators
+        run: |
+          python tools/sync-direct-download.py
+          python tools/polish-download-ui.py
+
+      - name: Validate software download site
+        run: python tools/validate-site.py
+
+      - name: Validate download panel UI
+        run: python tools/validate-download-ui.py
