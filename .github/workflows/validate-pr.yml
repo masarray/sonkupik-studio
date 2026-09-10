@@ -58,6 +58,11 @@ jobs:
       - name: Compile validation tooling
         run: python -m py_compile tools/*.py
 
+      - name: Prepare site using production generators
+        run: |
+          python tools/sync-direct-download.py
+          python tools/polish-download-ui.py
+
       - name: Validate software download site
         run: python tools/validate-site.py
 
